@@ -150,7 +150,7 @@ body.dark-mode .toast-msg { box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
 
     <div class="clicker-container">
       <div class="cc-card">
-        <div class="cc-header"><span>**** 7439</span><span>05/26</span></div>
+        <div class="cc-header"><span>CASH BALANCE</span><span>05/26</span></div>
         <div class="cc-mid">
           <div><div id="cc-balance" class="cc-balance-val mono">$0.00</div></div>
           <div><div id="cc-click" class="cc-click-val">$2.50 per click</div></div>
@@ -413,7 +413,7 @@ function initState() {
 
 function loadGame(){
   try{
-    const raw = localStorage.getItem('bEmpireSave');
+    const raw = localStorage.getItem('bEmpireTycoonSave');
     if(!raw) return false;
     const save = JSON.parse(raw);
     G.cash = save.cash || 500; G.lifetimeEarned = save.lifetimeEarned || G.cash;
