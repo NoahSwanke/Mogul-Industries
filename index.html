@@ -5,128 +5,394 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Mogul Industries</title>
 <link rel="icon" type="image/png" href="assets/favicon.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #ffffff; --card: #ffffff; --card2: #f3f4f6; --border: #e5e7eb;
-  --text: #111827; --muted: #6b7280;
-  --gold: #d97706; --gold2: #f59e0b; --green: #10b981; --red: #ef4444;
-  --blue: #2563eb; --purple: #8b5cf6; --nav-h: 70px;
+  /* Dark premium "financial terminal" palette */
+  --bg:      #0c0f1a;
+  --surface: #131826;
+  --card:    #181f30;
+  --card2:   #1e2840;
+  --border:  #252e44;
+  --border2: #2e3a56;
+  --text:    #e8edf8;
+  --muted:   #5a6a88;
+  --dim:     #3a4a6a;
+
+  /* Accent system */
+  --gold:    #e8a030;
+  --gold2:   #f5b84a;
+  --gold-bg: rgba(232,160,48,0.10);
+  --green:   #2dd4a0;
+  --green-bg:rgba(45,212,160,0.10);
+  --red:     #f05a6e;
+  --red-bg:  rgba(240,90,110,0.10);
+  --blue:    #4d9fff;
+  --blue-bg: rgba(77,159,255,0.10);
+  --purple:  #a78bfa;
+  --purple-bg:rgba(167,139,250,0.10);
+
+  --nav-h: 68px;
+  --radius: 10px;
+  --mono: 'DM Mono', monospace;
+  --ui: 'Sora', sans-serif;
 }
-body.dark-mode {
-  --bg: #0f172a; --card: #1e293b; --card2: #334155; --border: #475569;
-  --text: #f8fafc; --muted: #94a3b8;
-}
+
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; overflow: hidden; height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; }
-.mono { font-family: 'Share Tech Mono', monospace; }
 
-/* SLEEK UNIVERSAL HEADER */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--ui);
+  font-size: 14px;
+  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── HEADER ─── */
 #sticky-header {
-  flex-shrink: 0; display: flex; justify-content: space-between; align-items: center;
-  padding: 12px 20px; background: var(--bg); border-bottom: 1px solid var(--border);
-  font-size: 18px; font-weight: 800; z-index: 100; transition: background 0.3s, border-color 0.3s;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  height: 52px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  position: relative;
 }
+#sticky-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--blue), transparent);
+  opacity: 0.3;
+}
+.hd-stat { display: flex; flex-direction: column; align-items: center; }
+.hd-label { font-size: 9px; letter-spacing: 2px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+.hd-value { font-family: var(--mono); font-size: 17px; font-weight: 500; margin-top: 1px; }
+#univ-cash { color: var(--green); }
+#univ-stars { color: var(--gold); }
 
-/* SEAMLESS SCROLLING TICKER */
-#ticker-bar { background: #000; color: #fff; padding: 6px 0; height: 28px; overflow: hidden; display: flex; align-items: center; flex-shrink: 0; }
-#ticker-inner { display: flex; white-space: nowrap; animation: tickerScroll 60s linear infinite; width: max-content; }
+/* ─── TICKER ─── */
+#ticker-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 5px 0;
+  height: 26px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+#ticker-inner { display: flex; white-space: nowrap; animation: tickerScroll 80s linear infinite; width: max-content; }
 @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-.ticker-item { display: inline-flex; gap: 6px; margin-right: 40px; }
-.ticker-up { color: #34d399; } .ticker-dn { color: #f87171; }
+.ticker-item { display: inline-flex; gap: 5px; margin-right: 32px; font-family: var(--mono); font-size: 11px; }
+.ticker-sym { color: var(--muted); }
+.ticker-up { color: var(--green); }
+.ticker-dn { color: var(--red); }
 
-/* MAIN CONTAINER & NAV */
-#app { flex: 1; overflow-y: auto; padding: 16px 16px 90px 16px; }
-.tab-content { display: none; animation: fadeIn 0.2s ease; }
-.tab-content.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+/* ─── APP SHELL ─── */
+#app { flex: 1; overflow-y: auto; padding: 14px 14px 84px; }
+::-webkit-scrollbar { width: 0; }
 
-#bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h); background: var(--bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom); z-index: 1000; transition: background 0.3s, border-color 0.3s; }
-.nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); font-size: 11px; font-weight: 600; cursor: pointer; width: 20%; height: 100%; }
-.nav-item.active { color: var(--text); }
-.nav-icon { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 4px; position: relative; }
-.nav-item.active .nav-icon { background: var(--text); color: var(--bg); }
-.nav-item svg { width: 22px; height: 22px; stroke-width: 2px; }
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.18s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
+/* ─── BOTTOM NAV ─── */
+#bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-around; align-items: center;
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 1000;
+}
+.nav-item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+  cursor: pointer; width: 20%; height: 100%;
+  transition: color 0.2s;
+}
+.nav-item.active { color: var(--gold); }
+.nav-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 3px; position: relative;
+  transition: background 0.2s;
+}
+.nav-item.active .nav-icon { background: var(--gold-bg); }
+.nav-item svg { width: 20px; height: 20px; stroke-width: 2px; }
 .nav-alert-dot {
-  position: absolute; top: 2px; right: 2px; width: 8px; height: 8px;
-  background: var(--red); border-radius: 50%; border: 2px solid var(--bg);
-  display: none; animation: pulse-red 1.5s infinite;
+  position: absolute; top: 4px; right: 4px;
+  width: 7px; height: 7px;
+  background: var(--red); border-radius: 50%;
+  border: 1.5px solid var(--surface);
+  display: none;
 }
-.nav-alert-dot.visible { display: block; }
-@keyframes pulse-red {
-  0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 7px rgba(239, 68, 68, 0); }
-  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+.nav-alert-dot.visible { display: block; animation: pulseRed 1.8s infinite; }
+@keyframes pulseRed {
+  0%   { box-shadow: 0 0 0 0 rgba(240,90,110,0.7); }
+  70%  { box-shadow: 0 0 0 6px rgba(240,90,110,0); }
+  100% { box-shadow: 0 0 0 0 rgba(240,90,110,0); }
 }
 
-/* EARNINGS DASHBOARD */
-.clicker-container { max-width: 360px; margin: 0 auto 30px auto; }
-.cc-card { background: var(--bg); border: 1px solid var(--border); border-radius: 16px 16px 0 0; padding: 20px; position: relative; z-index: 2; margin-bottom: -1px; transition: background 0.3s, border-color 0.3s; }
-body.dark-mode .cc-card { border-color: var(--border); }
-.cc-header { display: flex; justify-content: space-between; font-family: monospace; font-size: 12px; font-weight: 600; letter-spacing: 2px; color: var(--muted); }
-.cc-mid { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 15px; }
-.cc-balance-lbl { font-size: 12px; font-weight: 600; color: var(--muted); }
-.cc-balance-val { font-size: 36px; font-weight: 800; letter-spacing: -1px; margin-top: -2px; }
-.cc-click-val { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
-.cc-bot { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 20px; font-size: 11px; font-weight: 600; }
-.cc-progress-wrap { height: 4px; background: var(--border); border-radius: 2px; margin-top: 4px; overflow: hidden; }
-.cc-progress-fill { height: 100%; background: var(--text); width: 0%; transition: width 0.1s linear; }
-.cc-upg-box { text-align: right; cursor: pointer; padding-left: 10px; }
-.cc-upg-cost { border-top: 1px solid var(--border); margin-top: 2px; padding-top: 2px; transition: border-color 0.3s; }
+/* ─── CARDS ─── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: var(--border2); }
 
-.click-pad { width: 100%; aspect-ratio: 1/1; background: var(--bg); border: 1px solid var(--border); border-top: none; border-radius: 0 0 16px 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1; transition: transform 0.05s, background 0.1s, border-color 0.3s; }
-body.dark-mode .click-pad { border-color: var(--border); }
+.section-title {
+  font-size: 10px; letter-spacing: 2.5px; font-weight: 700;
+  color: var(--muted); text-transform: uppercase;
+  margin-bottom: 10px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ─── CLICKER CARD (credit-card style) ─── */
+.clicker-container { max-width: 380px; margin: 0 auto 24px; }
+
+.cc-card {
+  background: linear-gradient(135deg, #1a2340 0%, #1e2d50 50%, #162038 100%);
+  border: 1px solid var(--border2);
+  border-radius: 16px 16px 0 0;
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+  margin-bottom: -1px;
+}
+.cc-card::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,160,48,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cc-card::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; left: -40px;
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(77,159,255,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cc-chip {
+  display: flex; gap: 3px; margin-bottom: 20px;
+}
+.cc-chip-block {
+  width: 28px; height: 20px; border-radius: 3px;
+  background: linear-gradient(135deg, #d4a840, #f5c860);
+  opacity: 0.9;
+}
+.cc-header { display: flex; justify-content: space-between; align-items: flex-start; }
+.cc-balance-lbl { font-size: 9px; letter-spacing: 2px; color: rgba(232,237,248,0.5); font-weight: 600; }
+.cc-balance-val { font-family: var(--mono); font-size: 32px; font-weight: 500; color: #fff; margin-top: 4px; letter-spacing: -0.5px; }
+.cc-bot { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 18px; }
+.cc-click-power { font-family: var(--mono); font-size: 13px; color: var(--gold2); }
+.cc-upg-box { text-align: right; cursor: pointer; min-width: 120px; }
+.cc-upg-power { font-size: 11px; color: rgba(232,237,248,0.6); }
+.cc-upg-btn {
+  display: inline-block; margin-top: 4px;
+  background: var(--gold); color: #0c0f1a;
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  padding: 4px 10px; border-radius: 20px;
+  transition: background 0.2s;
+}
+.cc-upg-btn:hover { background: var(--gold2); }
+.cc-level-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.cc-level-badge {
+  font-size: 10px; color: rgba(232,237,248,0.5);
+  font-family: var(--mono); letter-spacing: 1px;
+}
+.cc-progress-wrap { flex: 1; height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+.cc-progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.15s; width: 0%; }
+
+.click-pad {
+  width: 100%;
+  aspect-ratio: 1/1;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background 0.08s;
+  user-select: none;
+  -webkit-user-select: none;
+}
 .click-pad:active { background: var(--card2); }
-.click-pad svg { width: 72px; height: 72px; stroke: var(--text); transition: stroke 0.3s; }
+.click-pad-inner {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  pointer-events: none;
+}
+.click-pad svg { width: 64px; height: 64px; stroke: var(--gold); opacity: 0.85; transition: transform 0.08s; }
+.click-pad-hint { font-size: 10px; letter-spacing: 2px; color: var(--muted); font-weight: 600; }
 
-/* CARDS & UI ELEMENTS */
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; transition: background 0.3s, border-color 0.3s; }
-.section-title { font-size: 11px; letter-spacing: 2px; font-weight: 700; color: var(--muted); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); transition: border-color 0.3s; }
-.btn { padding: 8px 16px; border-radius: 8px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.5px; border: none; transition: background 0.2s, transform 0.1s; }
-.btn:active { transform: scale(0.98); }
-.btn-gold { background: var(--gold); color: #fff; } .btn-gold:hover { background: var(--gold2); }
-.btn-green { background: rgba(16,185,129,0.1); border: 1px solid var(--green); color: var(--green); }
-.btn-red { background: rgba(239,68,68,0.1); border: 1px solid var(--red); color: var(--red); }
-.btn-blue { background: rgba(37,99,235,0.1); border: 1px solid var(--blue); color: var(--blue); }
-.btn-purple { background: rgba(139,92,246,0.1); border: 1px solid var(--purple); color: var(--purple); }
-.btn-muted { background: var(--card2); border: 1px solid var(--border); color: var(--text); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+/* ─── STATS ROW ─── */
+.stats-row { display: flex; gap: 10px; margin-bottom: 14px; }
+.stat-pill {
+  flex: 1; background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 10px 12px;
+}
+.stat-pill-lbl { font-size: 9px; letter-spacing: 2px; color: var(--muted); font-weight: 700; text-transform: uppercase; }
+.stat-pill-val { font-family: var(--mono); font-size: 17px; font-weight: 500; margin-top: 3px; }
 
-/* UPFRONTS POLISHED BUTTON */
+/* ─── BUTTONS ─── */
+.btn {
+  padding: 9px 16px; border-radius: 8px; cursor: pointer;
+  font-family: var(--ui); font-size: 12px; font-weight: 700;
+  letter-spacing: 0.5px; border: none;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.btn-gold    { background: var(--gold); color: #0c0f1a; }
+.btn-gold:hover { background: var(--gold2); }
+.btn-green   { background: var(--green-bg); border: 1px solid var(--green); color: var(--green); }
+.btn-red     { background: var(--red-bg); border: 1px solid var(--red); color: var(--red); }
+.btn-blue    { background: var(--blue-bg); border: 1px solid var(--blue); color: var(--blue); }
+.btn-purple  { background: var(--purple-bg); border: 1px solid var(--purple); color: var(--purple); }
+.btn-muted   { background: var(--card2); border: 1px solid var(--border); color: var(--text); }
+.btn-muted:hover { border-color: var(--border2); }
+
 .btn-upfront {
-  background: var(--blue); color: #fff; font-weight: 700; font-size: 11px;
-  padding: 6px 16px; border-radius: 20px; border: none; cursor: pointer;
-  letter-spacing: 0.5px; transition: transform 0.1s, background 0.2s; white-space: nowrap;
+  background: var(--blue); color: #fff;
+  font-family: var(--ui); font-weight: 700; font-size: 11px;
+  padding: 5px 14px; border-radius: 20px; border: none; cursor: pointer;
+  letter-spacing: 0.5px; transition: transform 0.1s, opacity 0.2s; white-space: nowrap;
 }
 .btn-upfront:active { transform: scale(0.95); }
-.upfront-bar-wrap { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 8px; }
-.upfront-bar-fill { height: 100%; background: var(--gold); transition: width 0.1s linear; }
 
-/* GRID & MISC */
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+/* ─── PROGRESS / BARS ─── */
+.upfront-bar-wrap { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.upfront-bar-fill { height: 100%; background: var(--gold); border-radius: 3px; transition: width 0.1s linear; }
+
+/* ─── GRID ─── */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
 #biz-owned-list { grid-template-columns: repeat(2, 1fr); }
-.price-big { font-family: 'Share Tech Mono', monospace; font-size: 22px; font-weight: 700; }
-.change.up { color: var(--green); font-size: 13px; font-weight: 700; } .change.down { color: var(--red); font-size: 13px; font-weight: 700; }
-.trade-row { display: flex; gap: 8px; align-items: center; margin-top: 12px; }
-.trade-row input { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-weight: 600; width: 80px; outline: none; transition: background 0.3s, border-color 0.3s, color 0.3s; }
-.float-num { position: fixed; pointer-events: none; font-size: 18px; color: var(--text); font-weight: 800; z-index: 9999; animation: floatUp 1s ease-out forwards; }
-@keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-60px); } }
+@media (max-width: 680px) { #biz-owned-list { grid-template-columns: 1fr; } }
 
-/* TOAST */
-#toast { position: fixed; top: 40px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
-.toast-msg { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px 20px; border-radius: 30px; font-size: 13px; font-weight: 700; box-shadow: 0 10px 25px rgba(0,0,0,0.1); animation: popIn 0.3s; transition: background 0.3s, border-color 0.3s, color 0.3s; }
-body.dark-mode .toast-msg { box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-.toast-msg.toast-success { border-color: var(--green); color: var(--green); } .toast-msg.toast-err { border-color: var(--red); color: var(--red); }
-@keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-::-webkit-scrollbar { width: 0px; background: transparent; }
+/* ─── STOCK ─── */
+.price-big { font-family: var(--mono); font-size: 20px; font-weight: 500; }
+.change { font-family: var(--mono); font-size: 12px; font-weight: 500; }
+.change.up { color: var(--green); }
+.change.down { color: var(--red); }
+
+.trade-row { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
+.trade-row input, .trade-row select {
+  background: var(--card2); border: 1px solid var(--border);
+  color: var(--text); padding: 8px 10px; border-radius: 6px;
+  font-family: var(--mono); font-size: 12px; font-weight: 500;
+  width: 80px; outline: none;
+  transition: border-color 0.2s;
+}
+.trade-row input:focus, .trade-row select:focus { border-color: var(--blue); }
+.trade-row select option { background: var(--card); }
+
+/* ─── FLOAT NUMBERS ─── */
+.float-num {
+  position: fixed; pointer-events: none;
+  font-family: var(--mono); font-size: 18px; font-weight: 500;
+  color: var(--green); z-index: 9999;
+  animation: floatUp 0.9s ease-out forwards;
+}
+@keyframes floatUp {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  20%  { transform: translateY(-10px) scale(1.08); }
+  100% { opacity: 0; transform: translateY(-55px) scale(0.9); }
+}
+
+/* ─── TOAST ─── */
+#toast {
+  position: fixed; top: 60px; left: 50%; transform: translateX(-50%);
+  z-index: 9999; display: flex; flex-direction: column; gap: 6px;
+  pointer-events: none; min-width: 200px;
+}
+.toast-msg {
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--text); padding: 10px 18px; border-radius: 24px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.3px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-align: center;
+}
+.toast-msg.toast-success { border-color: var(--green); color: var(--green); }
+.toast-msg.toast-err { border-color: var(--red); color: var(--red); }
+@keyframes popIn { from { opacity: 0; transform: scale(0.85) translateY(-4px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+/* ─── MODALS ─── */
+.modal-backdrop {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+  z-index: 2000; align-items: center; justify-content: center; padding: 16px;
+}
+.modal-box {
+  background: var(--card); border: 1px solid var(--border2);
+  border-radius: 14px; padding: 20px; width: 100%; max-width: 400px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+}
+.modal-box-tall { max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; }
+.modal-scroll { flex: 1; overflow-y: auto; }
+
+/* ─── BIZ HEADER BAR ─── */
+#biz-top-bar {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 16px;
+  margin-bottom: 12px;
+  display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+}
+.biz-stat-chunk { min-width: 100px; }
+.biz-stat-chunk .lbl { font-size: 9px; letter-spacing: 2px; color: var(--muted); font-weight: 700; text-transform: uppercase; }
+.biz-stat-chunk .val { font-family: var(--mono); font-size: 17px; font-weight: 500; margin-top: 2px; }
+
+/* ─── MISC ─── */
+.mono { font-family: var(--mono); }
+.tag {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+}
+.tag-gold { background: var(--gold-bg); color: var(--gold); border: 1px solid rgba(232,160,48,0.3); }
+.tag-green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(45,212,160,0.3); }
+.tag-muted { background: var(--card2); color: var(--muted); border: 1px solid var(--border); }
+
+/* Textarea */
+textarea {
+  background: var(--card2); border: 1px solid var(--border);
+  color: var(--text); border-radius: 6px; padding: 10px;
+  font-family: var(--mono); font-size: 11px; resize: none; outline: none;
+  transition: border-color 0.2s; word-break: break-all; width: 100%;
+}
+textarea:focus { border-color: var(--blue); }
 </style>
 </head>
 <body>
 
 <div id="sticky-header">
-  <div style="color:var(--green);" id="univ-cash">$0.00</div>
-  <div style="color:var(--gold);" id="univ-stars">★ 0</div>
+  <div class="hd-stat">
+    <span class="hd-label">Balance</span>
+    <span class="hd-value" id="univ-cash">$0.00</span>
+  </div>
+  <div style="font-size:13px; font-weight:800; letter-spacing:3px; color:var(--muted); text-transform:uppercase;">Mogul Industries</div>
+  <div class="hd-stat" style="align-items:flex-end;">
+    <span class="hd-label">Stars</span>
+    <span class="hd-value" id="univ-stars" style="color:var(--gold);">★ 0</span>
+  </div>
 </div>
 
 <div id="ticker-bar">
@@ -134,166 +400,199 @@ body.dark-mode .toast-msg { box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
 </div>
 
 <div id="app">
-  
+
+  <!-- EARNINGS TAB -->
   <div id="tab-earnings" class="tab-content active">
-    
-    <div style="display:flex; gap:12px; margin-bottom: 20px;">
-      <div class="card" style="flex:1; margin:0; padding:12px; text-align:center;">
-        <div style="font-size:10px; color:var(--muted); font-weight:700; letter-spacing:1px; margin-bottom:4px;">INCOME / HR</div>
-        <div id="earn-gross" class="mono" style="font-size:18px; font-weight:800; color:var(--green);">$0.00</div>
+    <div class="stats-row">
+      <div class="stat-pill">
+        <div class="stat-pill-lbl">Income / hr</div>
+        <div class="stat-pill-val" id="earn-gross" style="color:var(--green);">$0.00</div>
       </div>
-      <div class="card" style="flex:1; margin:0; padding:12px; text-align:center;">
-        <div style="font-size:10px; color:var(--muted); font-weight:700; letter-spacing:1px; margin-bottom:4px;">LIFETIME EARNED</div>
-        <div id="earn-life" class="mono" style="font-size:18px; font-weight:800; color:var(--gold2);">$0.00</div>
+      <div class="stat-pill">
+        <div class="stat-pill-lbl">Lifetime Earned</div>
+        <div class="stat-pill-val" id="earn-life" style="color:var(--gold);">$0.00</div>
       </div>
     </div>
 
     <div class="clicker-container">
       <div class="cc-card">
-        <div class="cc-header"><span>CASH BALANCE</span><span>05/26</span></div>
-        <div class="cc-mid">
-          <div><div id="cc-balance" class="cc-balance-val mono">$0.00</div></div>
-          <div><div id="cc-click" class="cc-click-val">$2.50 per click</div></div>
+        <div class="cc-chip">
+          <div class="cc-chip-block" style="width:20px;height:15px;"></div>
+          <div class="cc-chip-block" style="width:8px;height:15px;"></div>
+        </div>
+        <div class="cc-header">
+          <div>
+            <div class="cc-balance-lbl">CASH BALANCE</div>
+            <div class="cc-balance-val" id="cc-balance">$0.00</div>
+          </div>
+          <div class="cc-upg-box" id="cc-upgrade-box" onclick="handleUpgradeClick()">
+            <div class="cc-upg-power" id="cc-up-power"></div>
+            <div class="cc-upg-btn" id="cc-up-cost"></div>
+          </div>
         </div>
         <div class="cc-bot">
-          <div style="flex:1; margin-right: 20px;">
-            <div id="cc-level" style="margin-bottom:4px;">1 level</div>
-            <div class="cc-progress-wrap"><div id="cc-progress" class="cc-progress-fill"></div></div>
-          </div>
-          <div id="cc-upgrade-box" class="cc-upg-box" onclick="handleUpgradeClick()">
-            <div id="cc-up-power">▵ $1.60 per click</div>
-            <div id="cc-up-cost" class="cc-upg-cost">$1,000.00</div>
+          <div>
+            <div class="cc-click-power" id="cc-click">$2.50 / click</div>
           </div>
         </div>
+        <div class="cc-level-row" style="margin-top:14px;">
+          <div class="cc-level-badge" id="cc-level">LVL 0</div>
+          <div class="cc-progress-wrap"><div class="cc-progress-fill" id="cc-progress"></div></div>
+        </div>
       </div>
-      <div class="click-pad" onclick="handleClick(event)">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zm-7.518-.267A8.25 8.25 0 1120.25 10.5M8.288 14.212A5.25 5.25 0 1117.25 10.5"/></svg>
+      <div class="click-pad" id="click-pad" onclick="handleClick(event)">
+        <div class="click-pad-inner">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zm-7.518-.267A8.25 8.25 0 1120.25 10.5M8.288 14.212A5.25 5.25 0 1117.25 10.5"/></svg>
+          <span class="click-pad-hint">TAP TO EARN</span>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- BUSINESS TAB -->
   <div id="tab-business" class="tab-content">
-    
-    <div style="padding: 16px; background: var(--card); border-radius: 12px; border: 1px solid var(--border); margin-bottom: 16px; display:flex; justify-content:space-between; align-items:center;">
-       <div>
-         <div style="font-size:11px; color:var(--muted); font-weight:700; letter-spacing:1px;">LAND CAPACITY</div>
-         <div id="biz-land-txt" style="font-weight:800; font-size:18px; color:var(--blue);">0 / 10 Used</div>
-       </div>
-       <button class="btn btn-blue" onclick="expandLandModal()">🌍 BUY LAND</button>
+    <div id="biz-top-bar">
+      <div class="biz-stat-chunk">
+        <div class="lbl">Land</div>
+        <div class="val" id="biz-land-txt" style="color:var(--blue);">0 / 10</div>
+        <button class="btn btn-blue" style="padding:3px 10px; font-size:10px; margin-top:5px;" onclick="expandLandModal()">+ BUY LAND</button>
+      </div>
+      <div class="biz-stat-chunk" style="border-left:1px solid var(--border); padding-left:14px;">
+        <div class="lbl">Revenue / hr</div>
+        <div class="val" id="biz-rev-txt" style="color:var(--green);">$0.00</div>
+      </div>
+      <div style="flex:1; display:flex; justify-content:flex-end;">
+        <button id="btn-unlock-all" class="btn btn-gold" style="font-size:11px; display:none;" onclick="unlockCollectAll()">🔓 UNLOCK ALL ($50K)</button>
+        <button id="btn-collect-all" class="btn btn-gold" style="font-size:11px; display:none;" onclick="collectAllUpfronts()">COLLECT ALL</button>
+        <button id="btn-cooldown-all" class="btn btn-muted" style="font-size:11px; display:none;" disabled>⏳ COOLING DOWN</button>
+      </div>
     </div>
 
-    <button class="btn btn-gold" style="width:100%; padding:14px; font-size:16px; margin-bottom:24px;" onclick="openStoreModal()">🚀 START A NEW BUSINESS</button>
-    
-    <div class="section-title">YOUR EMPIRE</div>
+    <button class="btn btn-gold" style="width:100%; padding:13px; font-size:14px; margin-bottom:18px;" onclick="openStoreModal()">OPEN A BUSINESS</button>
+
+    <div class="section-title">Your Businesses</div>
     <div id="biz-owned-list" class="grid"></div>
   </div>
 
+  <!-- INVESTING TAB -->
   <div id="tab-investing" class="tab-content">
-    <div class="section-title">STOCK MARKET (VOLUME LIMITED)</div>
+    <div class="section-title">Stock Market · Volume Limited</div>
     <div class="grid" id="stock-list"></div>
   </div>
 
+  <!-- ITEMS TAB -->
   <div id="tab-items" class="tab-content">
-    <div class="section-title">LUXURY ASSETS</div>
+    <div class="section-title">Luxury Assets</div>
     <div class="grid" id="luxury-list"></div>
   </div>
 
+  <!-- PROFILE TAB -->
   <div id="tab-profile" class="tab-content">
-    <div class="section-title">SYSTEM PREFERENCES</div>
-    <button class="btn btn-blue" style="width:100%; margin-bottom:12px; padding:14px;" onclick="toggleDarkMode()">🌓 TOGGLE DARK MODE</button>
-    
-    <div style="display:flex; gap:12px; margin-bottom:12px;">
-      <button class="btn btn-gold" style="flex:1; padding:14px;" onclick="openExportModal()">📤 EXPORT STRING</button>
-      <button class="btn btn-green" style="flex:1; padding:14px;" onclick="openImportModal()">📥 IMPORT STRING</button>
+    <div class="section-title">Preferences</div>
+    <div style="display:flex; gap:10px; margin-bottom:10px;">
+      <button class="btn btn-blue" style="flex:1; padding:13px;" onclick="openExportModal()">📤 Export Save</button>
+      <button class="btn btn-green" style="flex:1; padding:13px;" onclick="openImportModal()">📥 Import Save</button>
     </div>
+    <button class="btn btn-muted" style="width:100%; margin-bottom:10px; padding:13px;" onclick="saveGame()">💾 Force Save</button>
+    <button class="btn btn-red" style="width:100%; padding:13px;" onclick="hardReset()">⚠️ Hard Reset</button>
 
-    <button class="btn btn-muted" style="width:100%; margin-bottom:12px; padding:14px;" onclick="saveGame()">💾 FORCE SAVE GAME</button>
-    <button class="btn btn-red" style="width:100%; padding:14px;" onclick="hardReset()">⚠️ HARD RESET WIPE</button>
-    
-    <div class="section-title" style="margin-top:24px;">LIFETIME STATISTICS</div>
-    <div class="card" style="margin:0; text-align:center;">
-      <div style="font-size:11px; color:var(--muted); font-weight:700;">TOTAL LIFETIME EARNED</div>
-      <div id="prof-life" class="mono" style="font-size:24px; font-weight:800; color:var(--gold2);">$0.00</div>
+    <div class="section-title" style="margin-top:20px;">Lifetime Stats</div>
+    <div class="card" style="text-align:center;">
+      <div class="stat-pill-lbl" style="margin-bottom:6px;">Total Lifetime Earned</div>
+      <div class="mono" style="font-size:28px; color:var(--gold);" id="prof-life">$0.00</div>
     </div>
   </div>
 
 </div>
 
+<!-- ─── BOTTOM NAV ─── -->
 <nav id="bottom-nav">
-  <div class="nav-item" onclick="showTab('investing', this)"><div class="nav-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg></div><span>Investing</span></div>
+  <div class="nav-item" onclick="showTab('investing', this)">
+    <div class="nav-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg></div>
+    <span>Investing</span>
+  </div>
   <div class="nav-item" id="nav-business" onclick="showTab('business', this)">
     <div class="nav-icon">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
       <div id="biz-alert-dot" class="nav-alert-dot"></div>
     </div>
     <span>Business</span>
   </div>
-  <div class="nav-item active" onclick="showTab('earnings', this)"><div class="nav-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div><span>Earnings</span></div>
-  <div class="nav-item" onclick="showTab('items', this)"><div class="nav-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg></div><span>Items</span></div>
-  <div class="nav-item" onclick="showTab('profile', this)"><div class="nav-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg></div><span>Profile</span></div>
+  <div class="nav-item active" onclick="showTab('earnings', this)">
+    <div class="nav-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+    <span>Earnings</span>
+  </div>
+  <div class="nav-item" onclick="showTab('items', this)">
+    <div class="nav-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg></div>
+    <span>Items</span>
+  </div>
+  <div class="nav-item" onclick="showTab('profile', this)">
+    <div class="nav-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg></div>
+    <span>Profile</span>
+  </div>
 </nav>
 
-<div id="store-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center; padding:20px;">
-  <div class="card" style="width:100%; max-width:400px; max-height:85vh; display:flex; flex-direction:column; overflow:hidden;">
-    <div class="section-title" style="flex-shrink:0;">SELECT A FRANCHISE</div>
-    <div id="store-options" style="flex:1; overflow-y:auto; padding-right:8px; display:flex; flex-direction:column; gap:12px;"></div>
-    <button class="btn btn-muted" style="width:100%; margin-top:16px; flex-shrink:0;" onclick="document.getElementById('store-modal').style.display='none'">CANCEL</button>
+<!-- ─── MODALS ─── -->
+<div id="store-modal" class="modal-backdrop">
+  <div class="modal-box modal-box-tall">
+    <div class="section-title">Select a Franchise</div>
+    <div id="store-options" class="modal-scroll" style="padding-right:4px; display:flex; flex-direction:column; gap:10px;"></div>
+    <button class="btn btn-muted" style="width:100%; margin-top:14px; flex-shrink:0;" onclick="closeModal('store-modal')">Cancel</button>
   </div>
 </div>
 
-<div id="shop-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center; padding:20px;">
-  <div class="card" style="width:100%; max-width:400px; max-height:85vh; display:flex; flex-direction:column; overflow:hidden;">
-    <div class="section-title" style="flex-shrink:0;">CHOOSE RETAIL SIZE</div>
-    <div id="shop-options" style="flex:1; overflow-y:auto; padding-right:8px; display:flex; flex-direction:column; gap:12px;"></div>
-    <button class="btn btn-muted" style="width:100%; margin-top:16px; flex-shrink:0;" onclick="document.getElementById('shop-modal').style.display='none'; document.getElementById('store-modal').style.display='flex';">BACK TO FRANCHISES</button>
+<div id="shop-modal" class="modal-backdrop">
+  <div class="modal-box modal-box-tall">
+    <div class="section-title">Choose Retail Size</div>
+    <div id="shop-options" class="modal-scroll" style="padding-right:4px; display:flex; flex-direction:column; gap:10px;"></div>
+    <button class="btn btn-muted" style="width:100%; margin-top:14px; flex-shrink:0;" onclick="closeModal('shop-modal'); openStoreModal()">← Back</button>
   </div>
 </div>
 
-<div id="land-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center; padding:20px;">
-  <div class="card" style="width:100%; max-width:400px;">
-    <div class="section-title">EXPAND LAND CAPACITY</div>
+<div id="land-modal" class="modal-backdrop">
+  <div class="modal-box">
+    <div class="section-title">Expand Land Capacity</div>
     <div id="land-options"></div>
-    <button class="btn btn-muted" style="width:100%; margin-top:12px;" onclick="document.getElementById('land-modal').style.display='none'">CANCEL</button>
+    <button class="btn btn-muted" style="width:100%; margin-top:12px;" onclick="closeModal('land-modal')">Cancel</button>
   </div>
 </div>
 
-<div id="fleet-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center; padding:20px;">
-  <div class="card" style="width:100%; max-width:400px; max-height:85vh; display:flex; flex-direction:column; overflow:hidden;">
-    <div id="fleet-modal-title" class="section-title" style="flex-shrink:0;">SHIPPING LOGISTICS</div>
-    
-    <div style="flex:1; overflow-y:auto; padding-right:8px;">
-      <div style="font-weight:700; margin-bottom:8px;">1. Expand Garage Capacity</div>
-      <div id="fleet-cap-options" style="display:flex; gap:8px; margin-bottom:20px;">
-        </div>
-
-      <div style="font-weight:700; margin-bottom:8px;">2. Purchase Vehicles</div>
-      <div id="fleet-store" style="display:flex; flex-direction:column; gap:8px;"></div>
-
-      <div style="font-weight:700; margin-top:24px; margin-bottom:8px;">3. Your Garage</div>
-      <div id="fleet-garage" style="display:flex; flex-direction:column; gap:8px;"></div>
+<div id="fleet-modal" class="modal-backdrop">
+  <div class="modal-box modal-box-tall">
+    <div id="fleet-modal-title" class="section-title"></div>
+    <div class="modal-scroll">
+      <div id="fleet-view-garage">
+        <div style="font-size:11px; font-weight:700; color:var(--muted); letter-spacing:1px; margin-bottom:8px;">GARAGE CAPACITY</div>
+        <div id="fleet-cap-options" style="display:flex; gap:6px; margin-bottom:16px;"></div>
+        <button class="btn btn-gold" style="width:100%; padding:10px; margin-bottom:18px;" onclick="toggleFleetView('store')">🛒 Buy New Vehicles</button>
+        <div style="font-size:11px; font-weight:700; color:var(--muted); letter-spacing:1px; margin-bottom:8px;">YOUR GARAGE</div>
+        <div id="fleet-garage" style="display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
+      <div id="fleet-view-store" style="display:none;">
+        <button class="btn btn-muted" style="width:100%; padding:9px; margin-bottom:14px;" onclick="toggleFleetView('garage')">← Back to Garage</button>
+        <div style="font-size:11px; font-weight:700; color:var(--muted); letter-spacing:1px; margin-bottom:8px;">VEHICLE DEALERSHIP</div>
+        <div id="fleet-store" style="display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
     </div>
-    
-    <button class="btn btn-muted" style="width:100%; margin-top:16px; flex-shrink:0;" onclick="document.getElementById('fleet-modal').style.display='none'">CLOSE</button>
+    <button class="btn btn-muted" style="width:100%; margin-top:14px; flex-shrink:0;" onclick="closeModal('fleet-modal')">Close</button>
   </div>
 </div>
 
-<div id="biz-detail-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center; padding:20px;">
-  <div class="card" style="width:100%; max-width:420px; margin-bottom:0;">
+<div id="biz-detail-modal" class="modal-backdrop">
+  <div class="modal-box">
     <div id="biz-detail-content"></div>
-    <button class="btn btn-muted" style="width:100%; margin-top:16px;" onclick="closeBizDetailModal()">CLOSE</button>
+    <button class="btn btn-muted" style="width:100%; margin-top:14px;" onclick="closeModal('biz-detail-modal')">Close</button>
   </div>
 </div>
 
-<div id="save-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center; padding:20px;">
-  <div class="card" style="width:100%; max-width:400px; display:flex; flex-direction:column;">
-    <div id="save-modal-title" class="section-title">SAVE DATA</div>
-    <p id="save-modal-desc" style="font-size:12px; color:var(--muted); margin-bottom:12px; line-height:1.4;"></p>
-    
-    <textarea id="save-textarea" style="width:100%; height:120px; background:var(--card2); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:8px; font-family:'Share Tech Mono', monospace; font-size:11px; resize:none; margin-bottom:16px; outline:none; word-break:break-all;"></textarea>
-    
+<div id="save-modal" class="modal-backdrop">
+  <div class="modal-box">
+    <div id="save-modal-title" class="section-title"></div>
+    <p id="save-modal-desc" style="font-size:12px; color:var(--muted); margin-bottom:12px; line-height:1.6;"></p>
+    <textarea id="save-textarea" style="height:110px; margin-bottom:14px;"></textarea>
     <div style="display:flex; gap:8px;">
       <button id="save-action-btn" class="btn btn-blue" style="flex:1;"></button>
-      <button class="btn btn-muted" style="flex:1;" onclick="document.getElementById('save-modal').style.display='none'">CLOSE</button>
+      <button class="btn btn-muted" style="flex:1;" onclick="closeModal('save-modal')">Close</button>
     </div>
   </div>
 </div>
@@ -301,9 +600,9 @@ body.dark-mode .toast-msg { box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
 <div id="toast"></div>
 
 <script>
-// ==========================================
-// 📊 CORE DATA & CONFIGURATIONS
-// ==========================================
+// ============================================================
+// DATA
+// ============================================================
 const CLICK_UPGRADES = [
   {id:'cu1', cost:1000, power:4.10}, {id:'cu2', cost:3280, power:6.72},
   {id:'cu3', cost:10758, power:11.02}, {id:'cu4', cost:35285, power:18.07},
@@ -313,975 +612,1091 @@ const CLICK_UPGRADES = [
 ];
 
 const LAND_UPGRADES = [
-  { slots: 1, cost: 5000000, stars: 4 },
-  { slots: 2, cost: 7000000, stars: 10 },
-  { slots: 5, cost: 20000000, stars: 25 }
+  { slots:1, cost:5000000,  stars:4  },
+  { slots:2, cost:7000000,  stars:10 },
+  { slots:5, cost:20000000, stars:25 }
 ];
 
 const CAR_TYPES = {
-  chewy: { name:'Chewy Van', cost:29556, type:'City', maxMiles:466028, incPerHour:1750, fleetType:'shipping' },
-  fort:  { name:'Fort Transeet', cost:37000, type:'City', maxMiles:795355, incPerHour:1750, fleetType:'shipping' },
-  dobge: { name:'Dobge Rum', cost:41335, type:'City', maxMiles:832637, incPerHour:1750, fleetType:'shipping' },
-  cam:   { name:'CAM', cost:108617, type:'Long dist', maxMiles:1205460, incPerHour:3800, fleetType:'shipping' },
-  kent:  { name:'Kentworh', cost:112402, type:'Long dist', maxMiles:1304879, incPerHour:3800, fleetType:'shipping' },
-  
-  renolt: { name:'Renolt Logon', cost:10800, type:'Economy', maxMiles: 930565, incPerHour: 560, fleetType:'taxi' },
-  hendaji: { name:'Hendaji Solaer', cost:12262, type:'Economy', maxMiles: 858983, incPerHour: 560, fleetType:'taxi' },
-  vada: { name:'Vada Grant', cost:7853, type:'Economy', maxMiles: 536864, incPerHour: 560, fleetType:'taxi' },
-  skotta: { name:'Skotta Octavian', cost:22246, type:'Comfort', maxMiles: 1131889, incPerHour: 954, fleetType:'taxi' },
-  elintra: { name:'Hendaji Elintra', cost:20171, type:'Comfort', maxMiles: 1051136, incPerHour: 954, fleetType:'taxi' },
-  toyoda: { name:'Toyoda Samry', cost:29375, type:'Comfort+', maxMiles: 1345293, incPerHour: 1180, fleetType:'taxi' },
-  sontair: { name:'Hendaji Sontair', cost:26302, type:'Comfort+', maxMiles: 1329187, incPerHour: 1180, fleetType:'taxi' },
-  mb_e: { name:'Marcedes-Bens E-class', cost:66000, type:'Business', maxMiles: 1659583, incPerHour: 2420, fleetType:'taxi' },
-  dmw5: { name:'DMW 5', cost:62002, type:'Business', maxMiles: 1623568, incPerHour: 2420, fleetType:'taxi' },
-  auddi6: { name:'Auddi A6', cost:57869, type:'Business', maxMiles: 1587553, incPerHour: 2420, fleetType:'taxi' },
-  mb_s: { name:'Marcedes-Bens S-class', cost:137783, type:'Premier', maxMiles: 1749508, incPerHour: 5040, fleetType:'taxi' },
-  dmw7: { name:'DMW 7', cost:124005, type:'Premier', maxMiles: 1720651, incPerHour: 5040, fleetType:'taxi' },
-  auddi8: { name:'Auddi A8', cost:122274, type:'Premier', maxMiles: 1709243, incPerHour: 5040, fleetType:'taxi' },
-  mb_m: { name:'Marcedes-Maybech S-class', cost:262000, type:'Elite', maxMiles: 2684323, incPerHour: 13050, fleetType:'taxi' }
+  chewy:   {name:'Chewy Van',             cost:29556,  type:'City',     maxMiles:466028,  incPerHour:1750,  fleetType:'shipping'},
+  fort:    {name:'Fort Transeet',          cost:37000,  type:'City',     maxMiles:795355,  incPerHour:1750,  fleetType:'shipping'},
+  dobge:   {name:'Dobge Rum',              cost:41335,  type:'City',     maxMiles:832637,  incPerHour:1750,  fleetType:'shipping'},
+  cam:     {name:'CAM',                    cost:108617, type:'Long Dist',maxMiles:1205460, incPerHour:3800,  fleetType:'shipping'},
+  kent:    {name:'Kentworh',               cost:112402, type:'Long Dist',maxMiles:1304879, incPerHour:3800,  fleetType:'shipping'},
+  renolt:  {name:'Renolt Logon',           cost:10800,  type:'Economy',  maxMiles:930565,  incPerHour:560,   fleetType:'taxi'},
+  hendaji: {name:'Hendaji Solaer',         cost:12262,  type:'Economy',  maxMiles:858983,  incPerHour:560,   fleetType:'taxi'},
+  vada:    {name:'Vada Grant',             cost:7853,   type:'Economy',  maxMiles:536864,  incPerHour:560,   fleetType:'taxi'},
+  skotta:  {name:'Skotta Octavian',        cost:22246,  type:'Comfort',  maxMiles:1131889, incPerHour:954,   fleetType:'taxi'},
+  elintra: {name:'Hendaji Elintra',        cost:20171,  type:'Comfort',  maxMiles:1051136, incPerHour:954,   fleetType:'taxi'},
+  toyoda:  {name:'Toyoda Samry',           cost:29375,  type:'Comfort+', maxMiles:1345293, incPerHour:1180,  fleetType:'taxi'},
+  sontair: {name:'Hendaji Sontair',        cost:26302,  type:'Comfort+', maxMiles:1329187, incPerHour:1180,  fleetType:'taxi'},
+  mb_e:    {name:'Marcedes-Bens E-class',  cost:66000,  type:'Business', maxMiles:1659583, incPerHour:2420,  fleetType:'taxi'},
+  dmw5:    {name:'DMW 5',                  cost:62002,  type:'Business', maxMiles:1623568, incPerHour:2420,  fleetType:'taxi'},
+  auddi6:  {name:'Auddi A6',               cost:57869,  type:'Business', maxMiles:1587553, incPerHour:2420,  fleetType:'taxi'},
+  mb_s:    {name:'Marcedes-Bens S-class',  cost:137783, type:'Premier',  maxMiles:1749508, incPerHour:5040,  fleetType:'taxi'},
+  dmw7:    {name:'DMW 7',                  cost:124005, type:'Premier',  maxMiles:1720651, incPerHour:5040,  fleetType:'taxi'},
+  auddi8:  {name:'Auddi A8',               cost:122274, type:'Premier',  maxMiles:1709243, incPerHour:5040,  fleetType:'taxi'},
+  mb_m:    {name:'Marcedes-Maybech S-class',cost:262000,type:'Elite',   maxMiles:2684323, incPerHour:13050, fleetType:'taxi'}
 };
 
 const BIZ_BPS = {
-  vber: { id:'vber', name:'Vber', emoji:'🚗', type:'standard', slots:1, baseCost:0, baseIncPerHour:50, starsAtMax:0,
-    upgrades: [{cost: 500, timeSec: 30, incPerHour: 120}, {cost: 1500, timeSec: 60, incPerHour: 250}]
-  },
-  taxi: { id:'taxi', name:'Taxi Company', emoji:'🚕', type:'fleet', slots:1, baseCost:9999, starsAtMax:0 },
-  shop_small: { id:'shop_small', name:'Small Shop', emoji:'🏪', type:'standard', slots:1, baseCost:4899, baseIncPerHour:102.06, starsAtMax:1,
-    upgrades: [
-      {cost: 1469.70, timeSec: 120, incPerHour: 137.78},
-      {cost: 1910.61, timeSec: 216, incPerHour: 186.00},
-      {cost: 2483.79, timeSec: 389, incPerHour: 251.10},
-      {cost: 3228.93, timeSec: 700, incPerHour: 338.99},
-      {cost: 4197.61, timeSec: 1260, incPerHour: 457.64},
-      {cost: 5456.89, timeSec: 2460, incPerHour: 617.81},
-      {cost: 7093.96, timeSec: 3660, incPerHour: 834.04},
-      {cost: 9222.14, timeSec: 4860, incPerHour: 1125.96},
-      {cost: 11988.79, timeSec: 6060, incPerHour: 1520.05}
-    ]
-  },
-  shop_medium: { id:'shop_medium', name:'Medium Shop', emoji:'🏬', type:'standard', slots:2, baseCost:12999, baseIncPerHour:235.49, starsAtMax:2,
-    upgrades: [
-      {cost: 3899.70, timeSec: 1200, incPerHour: 324.97},
-      {cost: 5069.60, timeSec: 2400, incPerHour: 448.45},
-      {cost: 6590.49, timeSec: 4800, incPerHour: 618.87},
-      {cost: 8567.64, timeSec: 9600, incPerHour: 854.04},
-      {cost: 11137.93, timeSec: 10800, incPerHour: 1178.58},
-      {cost: 14479.31, timeSec: 12000, incPerHour: 1626.44},
-      {cost: 18823.10, timeSec: 13200, incPerHour: 2244.49},
-      {cost: 24470.03, timeSec: 14400, incPerHour: 3097.39},
-      {cost: 31811.05, timeSec: 15600, incPerHour: 4274.40}
-    ]
-  },
-  shop_large: { id:'shop_large', name:'Large Shop', emoji:'🏢', type:'standard', slots:3, baseCost:54999, baseIncPerHour:5000, starsAtMax:3,
-    upgrades: [{cost: 20000, timeSec: 1200, incPerHour: 8000}]
-  },
-  shipping: { id:'shipping', name:'Shipping Company', emoji:'🚚', type:'fleet', slots:1, baseCost:19899, starsAtMax:0 }
+  vber: {id:'vber', name:'Vber', emoji:'🚗', type:'standard', slots:1, baseCost:0, baseIncPerHour:50, starsAtMax:0,
+    upgrades:[{cost:500,timeSec:30,incPerHour:120},{cost:1500,timeSec:60,incPerHour:250}]},
+  taxi: {id:'taxi', name:'Taxi Company', emoji:'🚕', type:'fleet', slots:1, baseCost:9999, starsAtMax:0},
+  shop_small: {id:'shop_small', name:'Small Shop', emoji:'🏪', type:'standard', slots:1, baseCost:4899, baseIncPerHour:102.06, starsAtMax:1,
+    upgrades:[
+      {cost:1469.70,timeSec:120,incPerHour:137.78},{cost:1910.61,timeSec:216,incPerHour:186.00},
+      {cost:2483.79,timeSec:389,incPerHour:251.10},{cost:3228.93,timeSec:700,incPerHour:338.99},
+      {cost:4197.61,timeSec:1260,incPerHour:457.64},{cost:5456.89,timeSec:2460,incPerHour:617.81},
+      {cost:7093.96,timeSec:3660,incPerHour:834.04},{cost:9222.14,timeSec:4860,incPerHour:1125.96},
+      {cost:11988.79,timeSec:6060,incPerHour:1520.05}
+    ]},
+  shop_medium: {id:'shop_medium', name:'Medium Shop', emoji:'🏬', type:'standard', slots:2, baseCost:12999, baseIncPerHour:235.49, starsAtMax:2,
+    upgrades:[
+      {cost:3899.70,timeSec:1200,incPerHour:324.97},{cost:5069.60,timeSec:2400,incPerHour:448.45},
+      {cost:6590.49,timeSec:4800,incPerHour:618.87},{cost:8567.64,timeSec:9600,incPerHour:854.04},
+      {cost:11137.93,timeSec:10800,incPerHour:1178.58},{cost:14479.31,timeSec:12000,incPerHour:1626.44},
+      {cost:18823.10,timeSec:13200,incPerHour:2244.49},{cost:24470.03,timeSec:14400,incPerHour:3097.39},
+      {cost:31811.05,timeSec:15600,incPerHour:4274.40}
+    ]},
+  shop_large: {id:'shop_large', name:'Large Shop', emoji:'🏢', type:'standard', slots:3, baseCost:54999, baseIncPerHour:5000, starsAtMax:3,
+    upgrades:[{cost:20000,timeSec:1200,incPerHour:8000}]},
+  shipping: {id:'shipping', name:'Shipping Company', emoji:'🚚', type:'fleet', slots:1, baseCost:19899, starsAtMax:0}
 };
 
 const STOCKS_DATA = [
-  {id:'techv',name:'TechVision Corp', ticker:'TECHV', startPrice:42.50, vol:0.012, maxShares: 100000},
-  {id:'gri',  name:'Global Retail',   ticker:'GRI',   startPrice:18.30, vol:0.010, maxShares: 500000},
-  {id:'pgc',  name:'PowerGrid Corp',  ticker:'PGC',   startPrice:95.20, vol:0.008, maxShares: 250000},
-  {id:'adr',  name:'AutoDrive Sys',   ticker:'ADR',   startPrice:156.80,vol:0.014, maxShares: 150000},
-  {id:'mbk',  name:'MegaBank Fin',    ticker:'MBK',   startPrice:78.40, vol:0.009, maxShares: 300000},
-  {id:'bgn',  name:'BioGenics Labs',  ticker:'BGN',   startPrice:33.60, vol:0.016, maxShares: 200000}
+  {id:'techv',name:'TechVision Corp',ticker:'TECHV',startPrice:42.50, vol:0.012,maxShares:100000,div:0.0003},
+  {id:'gri',  name:'Global Retail',  ticker:'GRI',  startPrice:18.30, vol:0.010,maxShares:500000,div:0.0004},
+  {id:'pgc',  name:'PowerGrid Corp', ticker:'PGC',  startPrice:95.20, vol:0.008,maxShares:250000,div:0.0005},
+  {id:'adr',  name:'AutoDrive Sys',  ticker:'ADR',  startPrice:156.80,vol:0.014,maxShares:150000,div:0.0002},
+  {id:'mbk',  name:'MegaBank Fin',   ticker:'MBK',  startPrice:78.40, vol:0.009,maxShares:300000,div:0.0006},
+  {id:'bgn',  name:'BioGenics Labs', ticker:'BGN',  startPrice:33.60, vol:0.016,maxShares:200000,div:0.0002}
 ];
 
-// ==========================================
-// 💾 STATE, CACHE & INIT
-// ==========================================
+// ============================================================
+// STATE
+// ============================================================
 let G = {
-  cash: 500, lifetimeEarned: 500, clickPower: 2.50, clickUpgrades: {},
-  landTotal: 10, stars: 0, ownedBiz: [], 
-  stocks: {}, stockPrices: {}, stockHistory: {}, stockPrev: {},
-  savedAtMs: Date.now()
+  cash:500, lifetimeEarned:500, clickPower:2.50, clickUpgrades:{},
+  landTotal:10, stars:0, ownedBiz:[],
+  stocks:{}, stockPrices:{}, stockHistory:{}, stockPrev:{},
+  savedAtMs: Date.now(),
+  unlockedCollectAll: false,
 };
 
-let activeTab = 'earnings';
+// Runtime only — never saved to disk
+let loopLastMs    = Date.now();
+let activeTab     = 'earnings';
 let currentNextUpgId = null;
-let loopLastMs = Date.now();
-const incomeCache = {};
+let currentFleetInstId = null;
 
+// ── Income cache: recalc only on level/fleet change, not every tick ──
+const incomeCache = {};
 function invalidateCache(instId) { delete incomeCache[instId]; }
 
-function initState() {
-  STOCKS_DATA.forEach(s => { 
-    G.stocks[s.id] = {shares:0}; 
-    G.stockPrices[s.id]=s.startPrice; G.stockHistory[s.id]=[s.startPrice]; G.stockPrev[s.id]=s.startPrice; 
-  });
+// ── Cached DOM refs — populated at init, never re-queried in the loop ──
+const DOM = {};
+
+// ── Running total so getTotalIncome() = O(1) instead of O(n) each tick ──
+let cachedTotalIncomePerHour = 0;
+function recalcTotalIncome() {
+  cachedTotalIncomePerHour = 0;
+  G.ownedBiz.forEach(inst => { cachedTotalIncomePerHour += getBizIncPerHour(inst); });
 }
 
-function loadGame(){
-  try{
-    const raw = localStorage.getItem('bEmpireTycoonSave');
-    if(!raw) return false;
-    const save = JSON.parse(raw);
-    G.cash = save.cash || 500; G.lifetimeEarned = save.lifetimeEarned || G.cash;
-    G.clickPower = save.clickPower || 2.50; G.clickUpgrades = save.clickUpgrades || {};
-    G.landTotal = save.landTotal || 10; G.stars = save.stars || 0;
-    
-    if (save.ownedBiz) {
-       G.ownedBiz = save.ownedBiz;
-       G.ownedBiz.forEach(inst => {
-          if (inst.lifetimeEarnings === undefined) inst.lifetimeEarnings = 0;
-          if (inst.level === 0 && BIZ_BPS[inst.bpId] && BIZ_BPS[inst.bpId].type !== 'fleet') inst.level = 1;
-          if (inst.upfrontTimer === undefined || isNaN(inst.upfrontTimer) || inst.upfrontTimer < 0) inst.upfrontTimer = 0;
-          if (inst.hourlyTimer === undefined || isNaN(inst.hourlyTimer) || inst.hourlyTimer < 0) inst.hourlyTimer = 3600;
-          if (inst.constructTimeLeft === undefined || isNaN(inst.constructTimeLeft) || inst.constructTimeLeft < 0) inst.constructTimeLeft = 0;
-          
-          if (inst.bpId === 'taxi' && !inst.fleet) {
-             inst.fleetCapacity = 5;
-             inst.fleet = [];
-          }
-       });
-    }
+// ── Dirty flags: set true when a full DOM rebuild is needed ──
+let bizListDirty = false;
+let alertDirty   = false;
 
-    if(save.stocks) Object.assign(G.stocks, save.stocks);
-    if(save.stockPrices) Object.assign(G.stockPrices, save.stockPrices);
-    if(save.stockHistory) Object.assign(G.stockHistory, save.stockHistory);
-    
-    // FRACTIONAL OFFLINE MATH
-    const savedTime = save.savedAtMs || save.lastTick;
-    if(savedTime){
-      const offSecs = (Date.now() - savedTime) / 1000;
-      if(offSecs > 60) {
-         let offEarned = 0; 
-         const hrs = offSecs / 3600;
-         G.ownedBiz.forEach(inst => { 
-            offEarned += (getBizIncPerHour(inst) * hrs); 
-            if (inst.upfrontTimer > 0) inst.upfrontTimer = Math.max(0, inst.upfrontTimer - offSecs);
-            if (inst.constructTimeLeft > 0) inst.constructTimeLeft = Math.max(0, inst.constructTimeLeft - offSecs);
-         });
-         if (offEarned > 0) { earn(offEarned); toast(`Offline: Made ${fmt(offEarned)} over ${hrs.toFixed(1)} hrs.`, 'success'); }
-      }
-    }
-    return true;
-  }catch(e){ return false; }
-}
-
-function saveGame(){ G.savedAtMs = Date.now(); localStorage.setItem('bEmpireTycoonSave', JSON.stringify(G)); }
-function hardReset() { if(!confirm("WIPE EVERYTHING?")) return; localStorage.removeItem('bEmpireTycoonSave'); location.reload(); }
-
-// ==========================================
-// 🧮 CORE MATH UTILS
-// ==========================================
-function fmt(n) { 
+// ============================================================
+// UTILS
+// ============================================================
+function fmt(n) {
   if (!n && n !== 0) return '$0.00';
   const a = Math.abs(n), s = n < 0 ? '-' : '';
   if (a >= 1e15) return s + '$' + (a/1e15).toFixed(2) + 'Q';
   if (a >= 1e12) return s + '$' + (a/1e12).toFixed(2) + 'T';
-  if (a >= 1e9)  return s + '$' + (a/1e9).toFixed(2) + 'B';
-  if (a >= 1e6)  return s + '$' + (a/1e6).toFixed(2) + 'M';
-  return s + '$' + a.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); 
+  if (a >= 1e9)  return s + '$' + (a/1e9).toFixed(2)  + 'B';
+  if (a >= 1e6)  return s + '$' + (a/1e6).toFixed(2)  + 'M';
+  return s + '$' + a.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
 }
-
 function pct(n) { return (n>=0?'+':'')+(n*100).toFixed(2)+'%'; }
 function canAfford(x) { return G.cash >= x; }
 function spend(x) { G.cash -= x; }
 function earn(x) { G.cash += x; G.lifetimeEarned += x; }
-
-function getLandUsed() { return G.ownedBiz.reduce((sum, inst) => sum + BIZ_BPS[inst.bpId].slots, 0); }
+function getLandUsed() { return G.ownedBiz.reduce((s,i) => s + (BIZ_BPS[i.bpId]?.slots||0), 0); }
+function generateInstId() { return Math.random().toString(36).substr(2,9); }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
 function getBizIncPerHour(inst) {
   if (incomeCache[inst.instId] !== undefined) return incomeCache[inst.instId];
-  const bp = BIZ_BPS[inst.bpId];
+  const bp = BIZ_BPS[inst.bpId]; if (!bp) return 0;
   let t = 0;
-  if (!bp) return 0;
   if (bp.type === 'fleet') {
-    if (inst.fleet) {
-      inst.fleet.forEach(car => { if (car.mileage < CAR_TYPES[car.typeId].maxMiles) t += CAR_TYPES[car.typeId].incPerHour; });
-    }
+    inst.fleet?.forEach(car => { if (car.mileage < CAR_TYPES[car.typeId].maxMiles) t += CAR_TYPES[car.typeId].incPerHour; });
   } else {
     if (inst.level === 1) t = bp.baseIncPerHour || 0;
-    else if (inst.level > 1 && bp.upgrades[inst.level - 2]) t = bp.upgrades[inst.level - 2].incPerHour;
+    else if (bp.upgrades[inst.level-2]) t = bp.upgrades[inst.level-2].incPerHour;
   }
   incomeCache[inst.instId] = t;
   return t;
 }
 
-// ==========================================
-// 🖱️ CLICKER (MANUAL LABOR) & DASHBOARD
-// ==========================================
-function handleClick(evt) {
-  earn(G.clickPower);
-  if(evt) showFloatNum(evt.clientX, evt.clientY, '+'+fmt(G.clickPower));
-  updateDynamicVisuals();
-  const pad = document.querySelector('.click-pad');
-  if(pad) { pad.style.transform = 'scale(0.97)'; setTimeout(() => pad.style.transform = 'scale(1)', 50); }
+// ============================================================
+// SAVE / LOAD
+// ============================================================
+function initState() {
+  STOCKS_DATA.forEach(s => {
+    G.stocks[s.id]       = {shares:0, divVault:0, totalCost:0};
+    G.stockPrices[s.id]  = s.startPrice;
+    G.stockHistory[s.id] = [s.startPrice];
+    G.stockPrev[s.id]    = s.startPrice;
+  });
 }
 
-function showFloatNum(x, y, text) {
-  const el = document.createElement('div');
-  el.className = 'float-num';
-  el.textContent = text;
-  el.style.left = (x - 30) + 'px';
-  el.style.top = (y - 20) + 'px';
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), 1000);
+function loadGame() {
+  try {
+    const raw = localStorage.getItem('bEmpireTycoonSave');
+    if (!raw) return false;
+    const save = JSON.parse(raw);
+    G.cash             = save.cash            || 500;
+    G.lifetimeEarned   = save.lifetimeEarned  || G.cash;
+    G.clickPower       = save.clickPower      || 2.50;
+    G.clickUpgrades    = save.clickUpgrades   || {};
+    G.landTotal        = save.landTotal       || 10;
+    G.stars            = save.stars           || 0;
+    G.savedAtMs        = save.savedAtMs       || null;
+    G.unlockedCollectAll = save.unlockedCollectAll || false;
+
+    if (save.ownedBiz) {
+      G.ownedBiz = save.ownedBiz;
+      G.ownedBiz.forEach(inst => {
+        const bp = BIZ_BPS[inst.bpId];
+        if (!bp) return;
+        inst.lifetimeEarnings  ??= 0;
+        inst.upfrontTimer      = Math.max(0, isNaN(inst.upfrontTimer)      ? 0 : inst.upfrontTimer);
+        inst.constructTimeLeft = Math.max(0, isNaN(inst.constructTimeLeft) ? 0 : inst.constructTimeLeft);
+        inst.payoutTimer       ??= 5;
+        if (inst.level === 0 && bp.type !== 'fleet') inst.level = 1;
+        if (!inst.customName) inst.customName = bp.name;
+        if (bp.type === 'fleet' && !inst.fleet) { inst.fleetCapacity = 5; inst.fleet = []; }
+      });
+    }
+    if (save.stocks)       Object.assign(G.stocks,       save.stocks);
+    if (save.stockPrices)  Object.assign(G.stockPrices,  save.stockPrices);
+    if (save.stockHistory) Object.assign(G.stockHistory, save.stockHistory);
+
+    // Ensure divVault/totalCost exist on every stock (legacy save compat)
+    STOCKS_DATA.forEach(s => {
+      G.stocks[s.id] ??= {shares:0};
+      G.stocks[s.id].divVault  ??= 0;
+      G.stocks[s.id].totalCost ??= G.stocks[s.id].shares * G.stockPrices[s.id];
+    });
+
+    // Offline earnings: fractional hours
+    if (G.savedAtMs) {
+      const offSecs = Math.min((Date.now() - G.savedAtMs) / 1000, 48*3600);
+      if (offSecs > 10) {
+        // Tick down timers for offline period
+        G.ownedBiz.forEach(inst => {
+          inst.upfrontTimer      = Math.max(0, inst.upfrontTimer      - offSecs);
+          inst.constructTimeLeft = Math.max(0, inst.constructTimeLeft - offSecs);
+          // Finish any constructions that completed offline
+          if (inst.constructTimeLeft <= 0 && inst.constructTimeLeft !== 0) {
+            inst.constructTimeLeft = 0;
+            inst.level++;
+            invalidateCache(inst.instId);
+            const bp = BIZ_BPS[inst.bpId];
+            if (bp && inst.level > bp.upgrades.length) G.stars += bp.starsAtMax;
+          }
+        });
+
+        recalcTotalIncome(); // after offline upgrades may have changed levels
+
+        const offHrs    = offSecs / 3600;
+        const offEarned = G.ownedBiz.reduce((sum, inst) => sum + getBizIncPerHour(inst) * offHrs, 0);
+        if (offEarned > 0) {
+          earn(offEarned);
+          const h = Math.floor(offSecs/3600), m = Math.floor((offSecs%3600)/60);
+          toast(`Offline ${h}h ${m}m → +${fmt(offEarned)}`, 'success');
+        }
+      }
+    }
+    recalcTotalIncome();
+    return true;
+  } catch(e) { console.error('Load failed', e); return false; }
+}
+
+function saveGame() {
+  G.savedAtMs = Date.now();
+  localStorage.setItem('bEmpireTycoonSave', JSON.stringify(G));
+}
+function hardReset() { if (!confirm('WIPE EVERYTHING?')) return; localStorage.removeItem('bEmpireTycoonSave'); location.reload(); }
+
+// ============================================================
+// CLICKER
+// ============================================================
+function handleClick(evt) {
+  earn(G.clickPower);
+  if (evt) showFloatNum(evt.clientX, evt.clientY, '+'+fmt(G.clickPower));
+  // Micro-animation
+  const pad = document.getElementById('click-pad');
+  if (pad) { pad.style.transform = 'scale(0.96)'; setTimeout(() => pad.style.transform = '', 80); }
 }
 
 function handleUpgradeClick() { if (currentNextUpgId) buyClickUpgrade(currentNextUpgId); }
 
-function buyClickUpgrade(id){
-  const u = CLICK_UPGRADES.find(x=>x.id===id);
-  if(!u || G.clickUpgrades[id]) return;
-  if(!canAfford(u.cost)){ toast('Not enough cash!','err'); return; }
-  spend(u.cost); G.clickUpgrades[id]=true; G.clickPower=u.power;
-  toast('✅ Level Up!','success');
+function buyClickUpgrade(id) {
+  const u = CLICK_UPGRADES.find(x => x.id === id);
+  if (!u || G.clickUpgrades[id]) return;
+  if (!canAfford(u.cost)) { toast('Not enough cash!', 'err'); return; }
+  spend(u.cost); G.clickUpgrades[id] = true; G.clickPower = u.power;
+  toast('✅ Click power upgraded!', 'success');
   updateClickerUI();
 }
 
-function updateDynamicVisuals() {
-  document.getElementById('univ-cash').textContent = fmt(G.cash);
-  document.getElementById('univ-stars').textContent = '★ ' + G.stars;
-  
-  if (activeTab === 'earnings') {
-    document.getElementById('cc-balance').textContent = fmt(G.cash);
-    
-    let gross = 0; G.ownedBiz.forEach(inst => gross += getBizIncPerHour(inst));
-    const elGross = document.getElementById('earn-gross');
-    const elLife = document.getElementById('earn-life');
-    if (elGross) elGross.textContent = fmt(gross);
-    if (elLife) elLife.textContent = fmt(G.lifetimeEarned);
+function updateClickerUI() {
+  if (DOM.ccClick)  DOM.ccClick.textContent  = fmt(G.clickPower) + ' / click';
 
+  let level = 0, nextUpg = null;
+  for (const u of CLICK_UPGRADES) {
+    if (G.clickUpgrades[u.id]) level++;
+    else if (!nextUpg) nextUpg = u;
+  }
+
+  if (DOM.ccLevel) DOM.ccLevel.textContent = 'LVL ' + level;
+  const upBox = DOM.ccUpgradeBox;
+  if (nextUpg) {
+    currentNextUpgId = nextUpg.id;
+    if (upBox) upBox.style.display = 'block';
+    if (DOM.ccUpPower) DOM.ccUpPower.textContent = '▵ +' + fmt(nextUpg.power - G.clickPower) + ' / click';
+    if (DOM.ccUpCost)  DOM.ccUpCost.textContent  = fmt(nextUpg.cost);
+  } else {
+    currentNextUpgId = null;
+    if (upBox) upBox.style.display = 'none';
+    if (DOM.ccLevel) DOM.ccLevel.textContent = 'MAX LEVEL';
+    if (DOM.ccProgress) DOM.ccProgress.style.width = '100%';
+  }
+}
+
+// ============================================================
+// DISPLAY UPDATES (called from loop at different rates)
+// ============================================================
+
+// Fast (every 100ms): cash, balance, progress bar only
+function updateFast() {
+  const cashStr = fmt(G.cash);
+  if (DOM.univCash)   DOM.univCash.textContent   = cashStr;
+  if (DOM.univStars)  DOM.univStars.textContent  = '★ ' + G.stars;
+
+  if (activeTab === 'earnings') {
+    if (DOM.ccBalance) DOM.ccBalance.textContent = cashStr;
     if (currentNextUpgId) {
-      const u = CLICK_UPGRADES.find(x=>x.id===currentNextUpgId);
-      if(u) {
-        document.getElementById('cc-progress').style.width = Math.min(100, (G.cash / u.cost) * 100) + '%';
-        document.getElementById('cc-up-cost').style.color = (G.cash >= u.cost) ? 'var(--green)' : 'var(--muted)';
+      const u = CLICK_UPGRADES.find(x => x.id === currentNextUpgId);
+      if (u && DOM.ccProgress) {
+        DOM.ccProgress.style.width = Math.min(100, (G.cash/u.cost)*100) + '%';
+        if (DOM.ccUpCost) DOM.ccUpCost.style.color = G.cash >= u.cost ? 'var(--green)' : '';
       }
     }
   }
 }
 
-function updateClickerUI() {
-  document.getElementById('cc-click').textContent = fmt(G.clickPower) + ' per click';
+// Medium (every 500ms): income totals, biz bar, nav alert
+function updateMedium() {
+  // Income / hr
+  const grossStr = fmt(cachedTotalIncomePerHour);
+  if (DOM.earnGross) DOM.earnGross.textContent = grossStr;
+  if (DOM.earnLife)  DOM.earnLife.textContent  = fmt(G.lifetimeEarned);
 
-  let level = 0; let nextUpg = null;
-  for (const u of CLICK_UPGRADES) {
-     if (G.clickUpgrades[u.id]) level++;
-     else if (!nextUpg) nextUpg = u;
+  if (activeTab === 'business') updateBizTopBar();
+  if (activeTab === 'profile') {
+    if (DOM.profLife) DOM.profLife.textContent = fmt(G.lifetimeEarned);
   }
-  document.getElementById('cc-level').textContent = level + ' level';
 
-  const upBox = document.getElementById('cc-upgrade-box');
-  if (nextUpg) {
-     currentNextUpgId = nextUpg.id;
-     upBox.style.display = 'block';
-     document.getElementById('cc-up-power').textContent = '▵ ' + fmt(nextUpg.power - G.clickPower) + ' per click';
-     document.getElementById('cc-up-cost').textContent = fmt(nextUpg.cost);
-  } else {
-     currentNextUpgId = null;
-     upBox.style.display = 'none';
-     document.getElementById('cc-progress').style.width = '100%';
-     document.getElementById('cc-level').textContent = 'MAX LEVEL';
+  if (alertDirty) {
+    updateNavAlerts();
+    alertDirty = false;
   }
-  updateDynamicVisuals();
 }
 
-// ==========================================
-// 🏢 BUSINESS ENGINE (MODALS & LOGIC)
-// ==========================================
-function generateInstId() { return Math.random().toString(36).substr(2, 9); }
+function updateBizTopBar() {
+  if (DOM.bizLandTxt) DOM.bizLandTxt.textContent = `${getLandUsed()} / ${G.landTotal}`;
+  if (DOM.bizRevTxt)  DOM.bizRevTxt.textContent  = fmt(cachedTotalIncomePerHour);
 
-// --- STORE MODALS ---
+  const canCollect = G.ownedBiz.some(i => getBizIncPerHour(i) > 0 && i.upfrontTimer <= 0);
+  const btnU = DOM.btnUnlockAll, btnC = DOM.btnCollectAll, btnD = DOM.btnCooldownAll;
+  if (!btnU) return;
+  if (!G.unlockedCollectAll) {
+    btnU.style.display = 'block'; btnC.style.display = 'none'; btnD.style.display = 'none';
+  } else if (canCollect) {
+    btnU.style.display = 'none'; btnC.style.display = 'block'; btnD.style.display = 'none';
+  } else {
+    btnU.style.display = 'none'; btnC.style.display = 'none'; btnD.style.display = 'block';
+  }
+}
+
+function updateNavAlerts() {
+  const dot = DOM.bizAlertDot;
+  if (!dot) return;
+  if (activeTab === 'business') { dot.classList.remove('visible'); return; }
+  const ready = G.ownedBiz.some(i => getBizIncPerHour(i) > 0 && i.upfrontTimer <= 0);
+  dot.classList.toggle('visible', ready);
+}
+
+function showFloatNum(x, y, text) {
+  const el = document.createElement('div');
+  el.className = 'float-num'; el.textContent = text;
+  el.style.left = (x-30)+'px'; el.style.top = (y-20)+'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 950);
+}
+
+// ============================================================
+// BUSINESS ENGINE
+// ============================================================
 function openStoreModal() {
-  const el = document.getElementById('store-options'); el.innerHTML = '';
-  
+  const el = document.getElementById('store-options');
+  el.innerHTML = '';
   el.appendChild(createStoreCard('vber'));
   el.appendChild(createStoreCard('taxi'));
   el.appendChild(createStoreCard('shipping'));
-  
-  const shopDiv = document.createElement('div'); shopDiv.className = 'card'; shopDiv.style.margin = '0';
-  shopDiv.innerHTML = `
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <div>
-        <span style="font-size:24px;">🏪</span>
-        <span style="font-weight:800; font-size:16px;">Retail Shop</span>
-        <div style="font-size:11px; color:var(--muted);">Multiple sizes available</div>
-      </div>
-      <button class="btn btn-blue" onclick="openShopModal()">VIEW</button>
-    </div>`;
+  const shopDiv = document.createElement('div');
+  shopDiv.className = 'card'; shopDiv.style.margin = '0';
+  shopDiv.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;">
+    <div><span style="font-size:22px;">🏪</span> <span style="font-weight:700;font-size:15px;">Retail Shop</span>
+    <div style="font-size:11px;color:var(--muted);">Multiple sizes available</div></div>
+    <button class="btn btn-blue" style="font-size:11px;" onclick="openShopModal()">VIEW →</button></div>`;
   el.appendChild(shopDiv);
-
   document.getElementById('store-modal').style.display = 'flex';
 }
 
 function createStoreCard(bpId) {
   const bp = BIZ_BPS[bpId];
-  const div = document.createElement('div'); div.className = 'card'; div.style.margin = '0';
-  div.innerHTML = `
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <div>
-        <span style="font-size:24px;">${bp.emoji}</span>
-        <span style="font-weight:800; font-size:16px;">${bp.name}</span>
-        <div style="font-size:11px; color:var(--muted);">Requires ${bp.slots} Land Slots</div>
-      </div>
-      <button class="btn btn-blue" onclick="buyBiz('${bp.id}')">${fmt(bp.baseCost)}</button>
-    </div>`;
+  const div = document.createElement('div');
+  div.className = 'card'; div.style.margin = '0';
+  div.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;">
+    <div><span style="font-size:22px;">${bp.emoji}</span> <span style="font-weight:700;font-size:15px;">${bp.name}</span>
+    <div style="font-size:11px;color:var(--muted);">${bp.slots} land slot${bp.slots>1?'s':''} · ${fmt(bp.baseCost)}</div></div>
+    <button class="btn btn-blue" style="font-size:11px;" onclick="buyBiz('${bp.id}')">BUY</button></div>`;
   return div;
 }
 
 function openShopModal() {
-  document.getElementById('store-modal').style.display = 'none';
-  const el = document.getElementById('shop-options'); el.innerHTML = '';
-  
-  el.appendChild(createStoreCard('shop_small'));
-  el.appendChild(createStoreCard('shop_medium'));
-  el.appendChild(createStoreCard('shop_large'));
-
+  closeModal('store-modal');
+  const el = document.getElementById('shop-options');
+  el.innerHTML = '';
+  ['shop_small','shop_medium','shop_large'].forEach(id => el.appendChild(createStoreCard(id)));
   document.getElementById('shop-modal').style.display = 'flex';
 }
 
 function buyBiz(bpId) {
   const bp = BIZ_BPS[bpId];
   if (!canAfford(bp.baseCost)) { toast(`Need ${fmt(bp.baseCost)}`, 'err'); return; }
-  if (getLandUsed() + bp.slots > G.landTotal) { toast('Not enough Land Slots! Buy more.', 'err'); return; }
+  if (getLandUsed() + bp.slots > G.landTotal) { toast('Not enough land slots!', 'err'); return; }
 
   if (bpId === 'shop_medium') {
-     const smallShopIdx = G.ownedBiz.findIndex(i => i.bpId === 'shop_small' && i.level === 10);
-     const shipIdx = G.ownedBiz.findIndex(i => i.bpId === 'shipping' && i.fleet.length >= 5);
-     if (smallShopIdx === -1 || shipIdx === -1) { toast('Requires: Small Shop Lv 10 AND Shipping Co w/ 5 Cars', 'err'); return; }
-     G.ownedBiz.splice(Math.max(smallShopIdx, shipIdx), 1);
-     G.ownedBiz.splice(Math.min(smallShopIdx, shipIdx), 1);
+    const si = G.ownedBiz.findIndex(i => i.bpId==='shop_small'  && i.level===10);
+    const sh = G.ownedBiz.findIndex(i => i.bpId==='shipping'    && i.fleet?.length>=5);
+    if (si===-1||sh===-1) { toast('Requires: Small Shop Lv10 + Shipping w/ 5 cars', 'err'); return; }
+  }
+
+  const customName = prompt(`Name your new ${bp.name}:`, bp.name);
+  if (customName === null || customName.trim() === '') return;
+
+  if (bpId === 'shop_medium') {
+    const si = G.ownedBiz.findIndex(i => i.bpId==='shop_small' && i.level===10);
+    const sh = G.ownedBiz.findIndex(i => i.bpId==='shipping'   && i.fleet?.length>=5);
+    [Math.max(si,sh), Math.min(si,sh)].forEach(idx => G.ownedBiz.splice(idx,1));
   }
 
   spend(bp.baseCost);
-  let inst = { instId: generateInstId(), bpId: bpId, level: 1, constructTimeLeft: 0, upfrontTimer: 60, hourlyTimer: 3600 };
-  if (bp.type === 'fleet') { inst.fleetCapacity = 5; inst.fleet = []; }
+  const inst = {
+    instId: generateInstId(), bpId, customName: customName.trim().substring(0,30),
+    level:1, constructTimeLeft:0, upfrontTimer:60, payoutTimer:5, lifetimeEarnings:0
+  };
+  if (bp.type==='fleet') { inst.fleetCapacity=5; inst.fleet=[]; }
   G.ownedBiz.push(inst);
-  
-  toast(`Opened ${bp.name}!`, 'success');
-  document.getElementById('store-modal').style.display = 'none';
-  document.getElementById('shop-modal').style.display = 'none';
-  
-  renderOwnedBiz(); updateBizTopStats(); updateDynamicVisuals(); updateNavAlerts();
+  invalidateCache(inst.instId);
+  recalcTotalIncome();
+
+  toast(`${inst.customName} opened!`, 'success');
+  closeModal('store-modal'); closeModal('shop-modal');
+  bizListDirty = true; alertDirty = true;
 }
 
 function startUpgrade(instId) {
-  const inst = G.ownedBiz.find(i => i.instId === instId);
+  const inst = G.ownedBiz.find(i => i.instId===instId);
+  if (!inst) return;
   const bp = BIZ_BPS[inst.bpId];
-  if (!inst || inst.constructTimeLeft > 0 || inst.level > bp.upgrades.length) return;
-  const upg = bp.upgrades[inst.level - 1]; 
+  if (inst.constructTimeLeft>0 || inst.level>bp.upgrades.length) return;
+  const upg = bp.upgrades[inst.level-1];
   if (!canAfford(upg.cost)) { toast(`Need ${fmt(upg.cost)}`, 'err'); return; }
   spend(upg.cost); inst.constructTimeLeft = upg.timeSec;
-  if(upg.timeSec === 0) finishUpgrade(inst);
-  renderOwnedBiz(); updateDynamicVisuals();
+  if (upg.timeSec===0) finishUpgrade(inst);
+  else bizListDirty = true;
 }
 
 function finishUpgrade(inst) {
   inst.constructTimeLeft = 0; inst.level++;
   invalidateCache(inst.instId);
+  recalcTotalIncome();
   const bp = BIZ_BPS[inst.bpId];
-  if (inst.level > bp.upgrades.length) { G.stars += bp.starsAtMax; toast(`MAX LEVEL! Earned ${bp.starsAtMax} Stars!`, 'gold'); } 
-  else { toast(`${bp.name} Upgraded to Lv ${inst.level}!`, 'success'); }
-  renderOwnedBiz(); updateDynamicVisuals(); updateNavAlerts();
+  if (inst.level > bp.upgrades.length) { G.stars += bp.starsAtMax; toast(`★ MAX LEVEL — +${bp.starsAtMax} stars!`, 'success'); }
+  else toast(`${inst.customName} → Lv ${inst.level}!`, 'success');
+  bizListDirty = true; alertDirty = true;
 }
 
 function devSkipTime(instId) {
-  const inst = G.ownedBiz.find(i => i.instId === instId);
-  if(inst) finishUpgrade(inst);
+  const inst = G.ownedBiz.find(i=>i.instId===instId);
+  if (inst) { inst.constructTimeLeft=0; finishUpgrade(inst); }
 }
 
-// SURGICAL DOM UPDATE: Prevents layout thrash when upfronts cycle
 function patchUpfrontUI(inst) {
-  const btn = document.getElementById(`btn-upf-${inst.instId}`);
+  const btn  = document.getElementById(`btn-upf-${inst.instId}`);
   const wrap = document.getElementById(`wrap-upf-${inst.instId}`);
+  if (!btn || !wrap) return;
   if (inst.upfrontTimer <= 0) {
-    if (btn) btn.style.display = 'inline-block';
-    if (wrap) wrap.style.display = 'none';
+    btn.style.display  = 'inline-block';
+    wrap.style.display = 'none';
   } else {
-    if (btn) btn.style.display = 'none';
-    if (wrap) wrap.style.display = 'block';
+    btn.style.display  = 'none';
+    wrap.style.display = 'block';
     const bar = document.getElementById(`bar-upf-${inst.instId}`);
-    if (bar) bar.style.width = ((1 - inst.upfrontTimer/60) * 100) + '%';
+    if (bar) bar.style.width = ((1 - inst.upfrontTimer/60)*100) + '%';
   }
 }
 
 function collectUpfront(instId) {
-  const inst = G.ownedBiz.find(i => i.instId === instId);
-  if (!inst) return;
-  if (inst.upfrontTimer > 0) return; // Hard block for infinite clicking
-  
-  const incPerHr = getBizIncPerHour(inst);
-  if (incPerHr <= 0) { toast('No income to collect.', 'err'); return; }
-  
-  inst.upfrontTimer = 60; // Set immediately to block double clicks
-  
-  const payout = incPerHr; // FULL hourly amount awarded instantly
-  earn(payout);
-  inst.lifetimeEarnings = (inst.lifetimeEarnings || 0) + payout;
-  showFloatNum(window.innerWidth/2, window.innerHeight/2, '+'+fmt(payout));
-  
-  patchUpfrontUI(inst); 
-  updateNavAlerts();
-  updateDynamicVisuals(); 
+  const inst = G.ownedBiz.find(i=>i.instId===instId);
+  if (!inst || inst.upfrontTimer>0) return;
+  const inc = getBizIncPerHour(inst);
+  if (inc<=0) { toast('No income to collect.','err'); return; }
+  inst.upfrontTimer = 60;
+  earn(inc);
+  inst.lifetimeEarnings = (inst.lifetimeEarnings||0) + inc;
+  showFloatNum(window.innerWidth/2, window.innerHeight/2, '+'+fmt(inc));
+  patchUpfrontUI(inst);
+  alertDirty = true;
 }
 
-// --- RENDERING BIZ TABS ---
-function updateBizTopStats() {
-  const el = document.getElementById('biz-land-txt');
-  if (el) el.textContent = `${getLandUsed()} / ${G.landTotal} Used`;
+function unlockCollectAll() {
+  if (!canAfford(50000)) { toast('Need $50,000 to unlock!','err'); return; }
+  spend(50000); G.unlockedCollectAll = true;
+  toast('Collect All unlocked!','success');
+  updateBizTopBar();
+}
+
+function collectAllUpfronts() {
+  if (!G.unlockedCollectAll) return;
+  let total = 0;
+  G.ownedBiz.forEach(inst => {
+    const inc = getBizIncPerHour(inst);
+    if (inst.upfrontTimer<=0 && inc>0) {
+      inst.upfrontTimer=60; total+=inc;
+      inst.lifetimeEarnings = (inst.lifetimeEarnings||0)+inc;
+      patchUpfrontUI(inst);
+    }
+  });
+  if (total>0) { earn(total); showFloatNum(window.innerWidth/2, window.innerHeight/2, '+'+fmt(total)); }
+  updateBizTopBar(); alertDirty=true;
 }
 
 function renderOwnedBiz() {
-  const el = document.getElementById('biz-owned-list'); el.innerHTML = '';
-  if (G.ownedBiz.length === 0) { el.innerHTML = '<div style="color:var(--muted); text-align:center;">No active operations.</div>'; return; }
-  
-  G.ownedBiz.forEach(inst => {
-     const bp = BIZ_BPS[inst.bpId]; const incHr = getBizIncPerHour(inst);
-     const isBuilding = inst.constructTimeLeft > 0; const isMaxed = bp.type !== 'fleet' && inst.level > bp.upgrades.length;
-     
-     let actionHtml = '';
-     if (bp.type === 'fleet') {
-       actionHtml = `<button class="btn btn-purple" style="width:100%" onclick="openFleetModal('${inst.instId}')">🚚 GARAGE (${inst.fleet.length}/${inst.fleetCapacity} USED)</button>`;
-     } else {
-       if (isBuilding) {
-         actionHtml = `
-           <div style="text-align:center;">
-             <div style="font-size:11px; font-weight:700; color:var(--gold);">🚧 UNDER CONSTRUCTION</div>
-             <div id="bld-${inst.instId}" class="mono" style="font-size:16px;">${Math.ceil(inst.constructTimeLeft)}s</div>
-             <button class="btn btn-green" style="padding:4px; font-size:10px; margin-top:4px;" onclick="devSkipTime('${inst.instId}')">[DEV: SKIP]</button>
-           </div>`;
-       } else if (isMaxed) {
-         actionHtml = `<div style="text-align:center; font-weight:800; color:var(--gold);">★ MAX LEVEL</div>`;
-       } else {
-         const upg = bp.upgrades[inst.level - 1];
-         actionHtml = `<button class="btn btn-muted" style="width:100%" onclick="startUpgrade('${inst.instId}')">UPGRADE TO LV ${inst.level + 1} (Cost: ${fmt(upg.cost)} | Time: ${upg.timeSec}s)</button>`;
-       }
-     }
-
-     let upfrontHtml = '';
-     if (incHr > 0) {
-        upfrontHtml = `
-          <div style="display:flex; justify-content:flex-end; margin-bottom: 12px; min-height: 28px; align-items:center;">
-            <button id="btn-upf-${inst.instId}" class="btn-upfront" onclick="collectUpfront('${inst.instId}')" style="display:${inst.upfrontTimer <= 0 ? 'inline-block' : 'none'};">Collect Upfronts</button>
-            <div id="wrap-upf-${inst.instId}" class="upfront-bar-wrap" style="width: 100%; max-width: 160px; margin:0; display:${inst.upfrontTimer > 0 ? 'block' : 'none'};">
-              <div id="bar-upf-${inst.instId}" class="upfront-bar-fill" style="width:${inst.upfrontTimer > 0 ? ((1 - inst.upfrontTimer/60)*100) : 0}%"></div>
-            </div>
-          </div>`;
-     }
-
-     const div = document.createElement('div'); div.className = 'card';
-     div.innerHTML = `
-       <div style="display:flex; justify-content:space-between; margin-bottom:8px; align-items:flex-start; cursor:pointer;" onclick="showBizDetail('${inst.instId}')">
-         <div>
-           <div style="font-weight:800; font-size:16px; pointer-events:none;">${bp.emoji} ${bp.name}</div>
-           ${bp.type !== 'fleet' ? `<div style="font-size:12px; color:var(--muted); font-weight:600; margin-top:2px;">Level ${inst.level}</div>` : ''}
-         </div>
-         <div style="text-align:right;"><div class="mono" style="color:var(--green); font-weight:800;">${fmt(incHr)}/hr</div></div>
-       </div>
-       ${upfrontHtml}
-       <div style="padding-top:12px; border-top:1px solid var(--border);">${actionHtml}</div>`;
-     el.appendChild(div);
-  });
-}
-
-function updateBizTimers(dt) {
-  G.ownedBiz.forEach(inst => {
-    // 1. Hourly AFK Deposit
-    inst.hourlyTimer -= dt;
-    if (inst.hourlyTimer <= 0) {
-       const inc = getBizIncPerHour(inst);
-       if (inc > 0) { 
-          earn(inc); 
-          inst.lifetimeEarnings = (inst.lifetimeEarnings || 0) + inc;
-          toast(`${BIZ_BPS[inst.bpId].name} generated ${fmt(inc)} (Hourly)`, 'success'); 
-       }
-       inst.hourlyTimer = 3600;
-       updateDynamicVisuals();
-    }
-    
-    // 2. Construction timers (Surgical text update)
-    if (inst.constructTimeLeft > 0) {
-       inst.constructTimeLeft -= dt;
-       if (inst.constructTimeLeft <= 0) { 
-          finishUpgrade(inst); 
-       } else { 
-          const el = document.getElementById(`bld-${inst.instId}`); 
-          if (el) el.textContent = Math.ceil(inst.constructTimeLeft) + 's'; 
-       }
-    }
-    
-    // 3. Upfronts Cooldown Slider (Surgical visual patch)
-    if (inst.upfrontTimer > 0) {
-       inst.upfrontTimer -= dt;
-       if (inst.upfrontTimer <= 0) {
-         inst.upfrontTimer = 0;
-         patchUpfrontUI(inst);
-         updateNavAlerts();
-       } else {
-         const bar = document.getElementById(`bar-upf-${inst.instId}`);
-         if (bar) bar.style.width = ((1 - inst.upfrontTimer/60) * 100) + '%';
-       }
-    }
-
-    // 4. Vehicle Mileage Degradation & UI update
-    if (BIZ_BPS[inst.bpId].type === 'fleet' && inst.fleet.length > 0) {
-       const milesPerSec = 22369.363 / 3600;
-       inst.fleet.forEach((car, i) => { 
-          if (car.mileage < CAR_TYPES[car.typeId].maxMiles) {
-             car.mileage += (milesPerSec * dt); 
-             if (car.mileage >= CAR_TYPES[car.typeId].maxMiles) { 
-                 invalidateCache(inst.instId); 
-                 updateDynamicVisuals(); 
-             } 
-             if (currentFleetInstId === inst.instId) {
-                const ct = CAR_TYPES[car.typeId];
-                const pct = Math.min(100, (car.mileage / ct.maxMiles) * 100);
-                const txtEl = document.getElementById(`car-mi-txt-${i}`);
-                const barEl = document.getElementById(`car-mi-bar-${i}`);
-                if(txtEl) txtEl.textContent = Math.floor(car.mileage).toLocaleString();
-                if(barEl) barEl.style.width = pct + '%';
-             }
-          }
-       });
-    }
-  });
-}
-
-function showBizDetail(instId) {
-  const modal = document.getElementById('biz-detail-modal');
-  const content = document.getElementById('biz-detail-content');
-  if (!modal || !content) return;
-
-  const inst = G.ownedBiz.find(i => i.instId === instId);
-  if (!inst) return;
-
-  const bp = BIZ_BPS[inst.bpId];
-  const incHr = getBizIncPerHour(inst);
-
-  content.innerHTML = `
-    <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--border);">
-      <div style="font-size:48px;">${bp.emoji}</div>
-      <div>
-        <div style="font-size:20px; font-weight:800;">${bp.name}</div>
-        <div style="font-size:12px; color:var(--muted); text-transform:capitalize;">${bp.type} Business · Level ${inst.level}</div>
-      </div>
-    </div>
-    
-    <div class="grid" style="grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:20px;">
-        <div style="text-align:center;">
-            <div style="font-size:11px; color:var(--muted); font-weight:700; letter-spacing:1px;">INCOME/HR</div>
-            <div class="mono" style="font-size:22px; font-weight:800; color:var(--green);">${fmt(incHr)}</div>
-        </div>
-        <div style="text-align:center;">
-            <div style="font-size:11px; color:var(--muted); font-weight:700; letter-spacing:1px;">LIFETIME EARNINGS</div>
-            <div class="mono" style="font-size:22px; font-weight:800; color:var(--gold);">${fmt(inst.lifetimeEarnings || 0)}</div>
-        </div>
-    </div>
-
-    <div class="section-title">OPERATIONS</div>
-    <button class="btn btn-red" style="width:100%;" onclick="closeDownBusiness('${inst.instId}')">
-      🔥 SHUT DOWN & RECLAIM ${bp.slots} LAND
-    </button>
-    <div style="font-size:11px; color:var(--muted); text-align:center; margin-top:8px;">This action is permanent and will not refund the purchase cost.</div>
-  `;
-
-  modal.style.display = 'flex';
-}
-
-function closeBizDetailModal() {
-  document.getElementById('biz-detail-modal').style.display = 'none';
-}
-
-function updateNavAlerts() {
-  const alertDot = document.getElementById('biz-alert-dot');
-  if (!alertDot) return;
-
-  if (activeTab === 'business') {
-    alertDot.classList.remove('visible');
+  const el = document.getElementById('biz-owned-list');
+  el.innerHTML = '';
+  if (G.ownedBiz.length===0) {
+    el.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px 0;">No active operations.</div>';
     return;
   }
+  G.ownedBiz.forEach(inst => {
+    const bp    = BIZ_BPS[inst.bpId];
+    const incHr = getBizIncPerHour(inst);
+    const isBuilding = inst.constructTimeLeft > 0;
+    const isMaxed    = bp.type!=='fleet' && inst.level>bp.upgrades.length;
 
-  let isAnyBizReady = false;
-  for (const inst of G.ownedBiz) {
-    if (getBizIncPerHour(inst) > 0 && inst.upfrontTimer <= 0) {
-      isAnyBizReady = true;
-      break;
+    let actionHtml = '';
+    if (bp.type==='fleet') {
+      const isFull = inst.fleet.length>=inst.fleetCapacity;
+      const fillPct = Math.min(100,(inst.fleet.length/inst.fleetCapacity)*100);
+      actionHtml = `
+        <div onclick="openFleetModal('${inst.instId}')" style="cursor:pointer;padding:9px 12px;border-radius:7px;border:1px solid var(--border);position:relative;overflow:hidden;font-weight:700;font-size:12px;color:${isFull?'var(--red)':'var(--purple)'};" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''">
+          <div style="position:absolute;inset:0;background:${isFull?'rgba(240,90,110,0.12)':'rgba(167,139,250,0.12)'};width:${fillPct}%;transition:width .3s;"></div>
+          <span style="position:relative;">🚚 GARAGE  ${inst.fleet.length} / ${inst.fleetCapacity}</span>
+        </div>`;
+    } else if (isBuilding) {
+      actionHtml = `<div style="text-align:center;padding:6px 0;">
+        <div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px;">🚧 UNDER CONSTRUCTION</div>
+        <div id="bld-${inst.instId}" style="font-family:var(--mono);font-size:20px;margin:4px 0;">${Math.ceil(inst.constructTimeLeft)}s</div>
+        <button class="btn btn-green" style="padding:3px 10px;font-size:10px;" onclick="devSkipTime('${inst.instId}')">[SKIP]</button>
+      </div>`;
+    } else if (isMaxed) {
+      actionHtml = `<div style="text-align:center;font-weight:800;font-size:13px;color:var(--gold);letter-spacing:1px;">★ MAX LEVEL</div>`;
+    } else {
+      const upg = bp.upgrades[inst.level-1];
+      actionHtml = `<button class="btn btn-muted" style="width:100%;font-size:11px;" onclick="startUpgrade('${inst.instId}')">
+        UPGRADE → Lv ${inst.level+1} &nbsp;·&nbsp; ${fmt(upg.cost)} &nbsp;·&nbsp; ${upg.timeSec}s
+      </button>`;
     }
-  }
 
-  alertDot.classList.toggle('visible', isAnyBizReady);
-}
+    let upfrontHtml = '';
+    if (incHr>0) {
+      upfrontHtml = `
+        <div style="display:flex;justify-content:flex-end;margin-bottom:10px;min-height:26px;align-items:center;">
+          <button id="btn-upf-${inst.instId}" class="btn-upfront" onclick="collectUpfront('${inst.instId}')" style="display:${inst.upfrontTimer<=0?'inline-block':'none'};">Collect Upfronts</button>
+          <div id="wrap-upf-${inst.instId}" style="width:100%;max-width:150px;display:${inst.upfrontTimer>0?'block':'none'};">
+            <div class="upfront-bar-wrap"><div id="bar-upf-${inst.instId}" class="upfront-bar-fill" style="width:${inst.upfrontTimer>0?((1-inst.upfrontTimer/60)*100):0}%;"></div></div>
+          </div>
+        </div>`;
+    }
 
-function closeDownBusiness(instId) {
-  if (!confirm("Are you sure you want to shut down this business? You will get the land back, but you will NOT be refunded the cost.")) {
-    return;
-  }
-
-  const bizIndex = G.ownedBiz.findIndex(i => i.instId === instId);
-  if (bizIndex > -1) {
-    const bp = BIZ_BPS[G.ownedBiz[bizIndex].bpId];
-    G.ownedBiz.splice(bizIndex, 1);
-    invalidateCache(instId);
-    toast(`✅ ${bp.name} has been shut down. ${bp.slots} land slots reclaimed.`, 'success');
-    
-    closeBizDetailModal();
-    renderOwnedBiz();
-    updateBizTopStats();
-    updateDynamicVisuals();
-  }
-}
-
-// --- LAND EXPANSION ---
-function expandLandModal() {
-  const el = document.getElementById('land-options'); el.innerHTML = '';
-  LAND_UPGRADES.forEach(u => {
-    el.innerHTML += `
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid var(--border);">
-        <div style="font-weight:700;">+${u.slots} Slots</div>
-        <button class="btn btn-blue" onclick="buyLand(${u.slots}, ${u.cost}, ${u.stars})">${fmt(u.cost)} & ★${u.stars}</button>
-      </div>`;
-  });
-  document.getElementById('land-modal').style.display = 'flex';
-}
-function buyLand(slots, cost, stars) {
-  if (!canAfford(cost) || G.stars < stars) { toast('Not enough cash or stars!', 'err'); return; }
-  spend(cost); G.stars -= stars; G.landTotal += slots;
-  toast(`Expanded land by ${slots}!`, 'success');
-  document.getElementById('land-modal').style.display = 'none';
-  updateBizTopStats(); updateDynamicVisuals();
-}
-
-// --- SHIPPING FLEET SYSTEM ---
-let currentFleetInstId = null;
-function openFleetModal(instId) {
-  currentFleetInstId = instId; 
-  renderFleetModal(); 
-  document.getElementById('fleet-modal').style.display = 'flex';
-}
-function buyFleetCap(amt, cost) {
-  const inst = G.ownedBiz.find(i => i.instId === currentFleetInstId); if (!inst) return;
-  if (!canAfford(cost)) { toast('Not enough cash!', 'err'); return; }
-  spend(cost); inst.fleetCapacity += amt; toast(`Capacity increased to ${inst.fleetCapacity}`, 'success'); 
-  renderFleetModal(); renderOwnedBiz();
-}
-function buyCar(typeId) {
-  const inst = G.ownedBiz.find(i => i.instId === currentFleetInstId); if (!inst) return;
-  
-  const qty = parseInt(document.getElementById(`buy-qty-${typeId}`).value) || 1;
-  if (inst.fleet.length + qty > inst.fleetCapacity) { toast(`Not enough garage capacity for ${qty}!`, 'err'); return; }
-  
-  const ct = CAR_TYPES[typeId]; 
-  const totalCost = ct.cost * qty;
-  if (!canAfford(totalCost)) { toast(`Need ${fmt(totalCost)}`, 'err'); return; }
-  
-  spend(totalCost); 
-  for (let x=0; x<qty; x++) { inst.fleet.push({ typeId: typeId, mileage: 0 }); }
-  invalidateCache(inst.instId);
-  
-  toast(`Bought ${qty} ${ct.name}`, 'success'); 
-  renderFleetModal(); renderOwnedBiz(); updateDynamicVisuals();
-}
-function renderFleetModal() {
-  const inst = G.ownedBiz.find(i => i.instId === currentFleetInstId); if (!inst) return;
-  const bpId = inst.bpId;
-  const isTaxi = bpId === 'taxi';
-  
-  const titleEl = document.getElementById('fleet-modal-title');
-  if (titleEl) titleEl.textContent = isTaxi ? 'TAXI FLEET MANAGEMENT' : 'SHIPPING LOGISTICS';
-  
-  const elCap = document.getElementById('fleet-cap-options');
-  if (isTaxi) {
-    elCap.innerHTML = `
-      <button class="btn btn-muted" style="flex:1; padding:6px; font-size:11px;" onclick="buyFleetCap(5, 17500)">+5 ($17.5k)</button>
-      <button class="btn btn-muted" style="flex:1; padding:6px; font-size:11px;" onclick="buyFleetCap(10, 50000)">+10 ($50k)</button>
-      <button class="btn btn-gold" style="flex:1; padding:6px; font-size:11px;" onclick="buyFleetCap(20, 140000)">+20 ($140k)</button>
-    `;
-  } else {
-    elCap.innerHTML = `
-      <button class="btn btn-muted" style="flex:1; padding:6px; font-size:11px;" onclick="buyFleetCap(5, 30000)">+5 ($30k)</button>
-      <button class="btn btn-muted" style="flex:1; padding:6px; font-size:11px;" onclick="buyFleetCap(10, 80000)">+10 ($80k)</button>
-      <button class="btn btn-gold" style="flex:1; padding:6px; font-size:11px;" onclick="buyFleetCap(20, 200000)">+20 ($200k)</button>
-    `;
-  }
-  
-  const elStore = document.getElementById('fleet-store'); elStore.innerHTML = '';
-  Object.keys(CAR_TYPES).forEach(k => {
-    const c = CAR_TYPES[k];
-    const targetType = c.fleetType || 'shipping';
-    if (targetType !== bpId) return;
-    
-    elStore.innerHTML += `
-      <div style="padding:10px; border:1px solid var(--border); border-radius:6px;">
-        <div style="font-weight:800; display:flex; justify-content:space-between;"><span>${c.name}</span> <span class="mono" style="color:var(--green);">${fmt(c.incPerHour)}/hr</span></div>
-        <div style="font-size:11px; color:var(--muted); margin-bottom:8px;">Type: ${c.type} | Max Mi: ${c.maxMiles.toLocaleString()}</div>
-        <div class="trade-row" style="margin-top:0;">
-          <input type="number" id="buy-qty-${k}" value="1" min="1">
-          <button class="btn btn-blue" style="flex:1;" onclick="buyCar('${k}')">BUY - ${fmt(c.cost)} ea</button>
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;align-items:flex-start;cursor:pointer;" onclick="showBizDetail('${inst.instId}')">
+        <div style="pointer-events:none;">
+          <div style="font-weight:700;font-size:15px;">${bp.emoji} ${inst.customName}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">${bp.name}${bp.type!=='fleet'?` · Lv ${inst.level}`:''}</div>
         </div>
-      </div>`;
-  });
-
-  const elGarage = document.getElementById('fleet-garage'); 
-  let gHtml = '';
-  inst.fleet.forEach((car, i) => {
-     const ct = CAR_TYPES[car.typeId];
-     const pct = Math.min(100, (car.mileage / ct.maxMiles) * 100);
-     gHtml += `
-       <div style="padding:10px; border:1px solid var(--border); border-radius:6px; background:var(--card2);">
-          <div style="display:flex; justify-content:space-between; font-weight:800; font-size:13px;">
-             <span>${ct.name} <span style="color:var(--muted); font-weight:600; font-size:11px;">(${ct.type})</span></span>
-             <span class="mono" style="color:var(--green);">${fmt(ct.incPerHour)}/hr</span>
-          </div>
-          <div style="margin-top:8px; font-size:11px; color:var(--muted); display:flex; justify-content:space-between;">
-             <span>Mileage: <span id="car-mi-txt-${i}">${Math.floor(car.mileage).toLocaleString()}</span> / ${ct.maxMiles.toLocaleString()}</span>
-             <span>${pct.toFixed(1)}%</span>
-          </div>
-          <div style="height:6px; background:var(--border); border-radius:3px; margin-top:4px; overflow:hidden;">
-             <div id="car-mi-bar-${i}" style="height:100%; background:var(--blue); width:${pct}%;"></div>
-          </div>
-       </div>`;
-  });
-  if (gHtml === '') gHtml = '<div style="color:var(--muted); font-size:12px; text-align:center;">Garage is currently empty.</div>';
-  elGarage.innerHTML = gHtml;
-}
-
-// ==========================================
-// 📈 STOCKS & TICKER
-// ==========================================
-function updateStockPrices(){
-  STOCKS_DATA.forEach(s=>{
-    G.stockPrev[s.id] = G.stockPrices[s.id];
-    const chg = 1 + (Math.random() - 0.5) * 2 * s.vol;
-    const mr = 1 + (s.startPrice - G.stockPrices[s.id]) / s.startPrice * 0.05;
-    G.stockPrices[s.id] = Math.max(0.01, G.stockPrices[s.id] * chg * mr);
-    const h = G.stockHistory[s.id]; h.push(G.stockPrices[s.id]);
-    if(h.length > 60) h.shift();
-  });
-}
-function buyStock(id, qty){
-  const s = STOCKS_DATA.find(x=>x.id===id); const cost = G.stockPrices[id] * qty;
-  if (!canAfford(cost)) { toast('Not enough cash!','err'); return; }
-  const state = G.stocks[id];
-  if (state.shares + qty > s.maxShares) { toast('Not enough volume available!','err'); return; }
-  spend(cost); state.shares += qty; renderStocks(); setTimeout(updateStockTick, 20); updateDynamicVisuals(); toast('Bought shares','success');
-}
-function sellStock(id, qty){
-  if(G.stocks[id].shares < qty){ toast('Not enough shares!','err'); return; }
-  G.stocks[id].shares -= qty; earn(G.stockPrices[id] * qty); renderStocks(); setTimeout(updateStockTick, 20); updateDynamicVisuals();
-}
-
-function drawChart(c, hist, color){
-  if(!c) return;
-  const ctx = c.getContext('2d'); 
-  // Fallback to width 300 to prevent corruption if drawn while tab is hidden
-  const w = c.clientWidth > 0 ? c.clientWidth : 300; 
-  const h = c.clientHeight > 0 ? c.clientHeight : 50;
-  c.width = w; c.height = h; 
-  ctx.clearRect(0,0,w,h);
-  if(hist.length < 2) return;
-  const mn = Math.min(...hist), mx = Math.max(...hist), rng = mx - mn || 1;
-  ctx.beginPath(); ctx.strokeStyle = color || '#10b981'; ctx.lineWidth = 2;
-  hist.forEach((p,i)=>{
-    const x = (i/(hist.length-1)) * w, y = h - ((p-mn)/rng) * (h-6) - 3;
-    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-  });
-  ctx.stroke(); ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
-  ctx.fillStyle = (color || '#10b981') + '11'; ctx.fill();
-}
-
-function renderStocks(){
-  const el=document.getElementById('stock-list'); el.innerHTML='';
-  STOCKS_DATA.forEach(s=>{
-    const price = G.stockPrices[s.id], prev = G.stockPrev[s.id];
-    const chg = (price-prev)/prev, owned = G.stocks[s.id].shares;
-    const avail = s.maxShares - owned;
-    
-    const div = document.createElement('div'); div.className='card';
-    div.innerHTML=`
-      <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <div><div style="font-size:11px;letter-spacing:1px;color:var(--muted);font-weight:700">${s.ticker}</div><div style="font-size:16px;font-weight:800">${s.name}</div></div>
-        <div style="text-align:right"><div class="price-big" id="price-${s.id}">$${price.toFixed(2)}</div><div id="chg-${s.id}" class="change ${chg>=0?'up':'down'}">${pct(chg)}</div></div>
+        <div style="text-align:right;pointer-events:none;">
+          <div class="mono" style="color:var(--green);font-size:14px;">${fmt(incHr)}<span style="font-size:10px;color:var(--muted)">/hr</span></div>
+        </div>
       </div>
-      <div style="font-size:11px; color:var(--muted); margin-top:4px;">Available Vol: ${avail.toLocaleString()}</div>
-      
-      <canvas class="chart" id="chart-${s.id}" width="300" height="50" style="width:100%; height:50px; margin:8px 0;"></canvas>
-      
-      <div class="trade-row">
-        <input type="number" id="sq-${s.id}" value="1" min="1" max="${avail}">
-        <button class="btn btn-blue" style="flex:1" onclick="buyStock('${s.id}', parseInt(document.getElementById('sq-${s.id}').value)||1)" ${avail<=0?'disabled':''}>BUY</button>
-        <button class="btn btn-muted" style="flex:1" onclick="sellStock('${s.id}', parseInt(document.getElementById('sq-${s.id}').value)||1)">SELL</button>
-      </div>`;
+      ${upfrontHtml}
+      <div style="border-top:1px solid var(--border);padding-top:10px;">${actionHtml}</div>`;
     el.appendChild(div);
   });
 }
 
-function updateStockTick() {
-  STOCKS_DATA.forEach(s => {
-    const price = G.stockPrices[s.id], prev = G.stockPrev[s.id], chg = (price - prev)/prev;
-    const priceEl = document.getElementById('price-' + s.id);
-    const chgEl = document.getElementById('chg-' + s.id);
-    if (priceEl) priceEl.textContent = '$' + price.toFixed(2);
-    if (chgEl) { chgEl.textContent = pct(chg); chgEl.className = 'change ' + (chg >= 0 ? 'up' : 'down'); }
-    
-    const c = document.getElementById('chart-' + s.id);
-    if (c) drawChart(c, G.stockHistory[s.id], chg >= 0 ? '#10b981' : '#ef4444');
-  });
+function showBizDetail(instId) {
+  const inst = G.ownedBiz.find(i=>i.instId===instId);
+  if (!inst) return;
+  const bp = BIZ_BPS[inst.bpId];
+  const incHr = getBizIncPerHour(inst);
+  document.getElementById('biz-detail-content').innerHTML = `
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);">
+      <div style="font-size:44px;">${bp.emoji}</div>
+      <div>
+        <div style="font-size:19px;font-weight:800;">${inst.customName}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;text-transform:capitalize;">${bp.name} · ${bp.type}${bp.type!=='fleet'?` · Lv ${inst.level}`:''}</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;">
+      <div class="stat-pill"><div class="stat-pill-lbl">Income/hr</div><div class="stat-pill-val" style="color:var(--green);">${fmt(incHr)}</div></div>
+      <div class="stat-pill"><div class="stat-pill-lbl">Lifetime</div><div class="stat-pill-val" style="color:var(--gold);">${fmt(inst.lifetimeEarnings||0)}</div></div>
+    </div>
+    <div class="section-title">Operations</div>
+    <button class="btn btn-red" style="width:100%;" onclick="closeDownBusiness('${inst.instId}')">🔥 Shut Down · Reclaim ${bp.slots} Land</button>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">Permanent. No purchase refund.</div>`;
+  document.getElementById('biz-detail-modal').style.display = 'flex';
 }
 
+function closeDownBusiness(instId) {
+  if (!confirm('Shut down this business? Land reclaimed, no refund.')) return;
+  const idx = G.ownedBiz.findIndex(i=>i.instId===instId);
+  if (idx>-1) {
+    const bp = BIZ_BPS[G.ownedBiz[idx].bpId];
+    invalidateCache(instId);
+    G.ownedBiz.splice(idx,1);
+    recalcTotalIncome();
+    toast(`${bp.name} shut down. ${bp.slots} land reclaimed.`,'success');
+    closeModal('biz-detail-modal');
+    bizListDirty = true; alertDirty = true;
+  }
+}
+
+function expandLandModal() {
+  const el = document.getElementById('land-options'); el.innerHTML='';
+  LAND_UPGRADES.forEach(u => {
+    el.innerHTML += `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+      <div style="font-weight:700;">+${u.slots} slot${u.slots>1?'s':''}</div>
+      <button class="btn btn-blue" style="font-size:11px;" onclick="buyLand(${u.slots},${u.cost},${u.stars})">${fmt(u.cost)} · ★${u.stars}</button>
+    </div>`;
+  });
+  document.getElementById('land-modal').style.display = 'flex';
+}
+
+function buyLand(slots,cost,stars) {
+  if (!canAfford(cost)||G.stars<stars) { toast('Not enough cash or stars!','err'); return; }
+  spend(cost); G.stars-=stars; G.landTotal+=slots;
+  toast(`+${slots} land slot${slots>1?'s':''}!`,'success');
+  closeModal('land-modal'); updateBizTopBar();
+}
+
+// ─── FLEET ───
+function openFleetModal(instId) {
+  currentFleetInstId=instId; toggleFleetView('garage'); renderFleetModal();
+  document.getElementById('fleet-modal').style.display='flex';
+}
+function toggleFleetView(view) {
+  document.getElementById('fleet-view-garage').style.display = view==='garage'?'block':'none';
+  document.getElementById('fleet-view-store').style.display  = view==='store' ?'block':'none';
+}
+function buyFleetCap(amt,cost) {
+  const inst=G.ownedBiz.find(i=>i.instId===currentFleetInstId); if(!inst) return;
+  if(!canAfford(cost)){toast('Not enough cash!','err');return;}
+  spend(cost); inst.fleetCapacity+=amt; toast(`Capacity → ${inst.fleetCapacity}`,'success');
+  renderFleetModal(); bizListDirty=true;
+}
+function updateCarPrice(typeId,cost) {
+  const qty=parseInt(document.getElementById(`buy-qty-${typeId}`)?.value)||0;
+  const btn=document.getElementById(`buy-btn-${typeId}`);
+  if(btn) btn.textContent='BUY — '+fmt(cost*qty);
+}
+function setMaxCarQty(typeId,cost) {
+  const inst=G.ownedBiz.find(i=>i.instId===currentFleetInstId); if(!inst) return;
+  const space=inst.fleetCapacity-inst.fleet.length;
+  const maxAff=Math.floor(G.cash/cost);
+  const max=Math.max(0,Math.min(space,maxAff));
+  const inp=document.getElementById(`buy-qty-${typeId}`);
+  if(inp){inp.value=max;updateCarPrice(typeId,cost);}
+}
+function buyCar(typeId) {
+  const inst=G.ownedBiz.find(i=>i.instId===currentFleetInstId); if(!inst) return;
+  const qty=parseInt(document.getElementById(`buy-qty-${typeId}`)?.value)||0;
+  if(qty<=0){toast('Enter a valid amount.','err');return;}
+  if(inst.fleet.length+qty>inst.fleetCapacity){toast('Not enough garage capacity!','err');return;}
+  const ct=CAR_TYPES[typeId]; const totalCost=ct.cost*qty;
+  if(!canAfford(totalCost)){toast(`Need ${fmt(totalCost)}`,'err');return;}
+  spend(totalCost);
+  for(let x=0;x<qty;x++) inst.fleet.push({typeId,mileage:0});
+  invalidateCache(inst.instId); recalcTotalIncome();
+  toast(`Bought ${qty} ${ct.name}`,'success');
+  const inp=document.getElementById(`buy-qty-${typeId}`);
+  if(inp){inp.value=1;updateCarPrice(typeId,ct.cost);}
+  renderFleetModal(); bizListDirty=true;
+}
+
+function renderFleetModal() {
+  const inst=G.ownedBiz.find(i=>i.instId===currentFleetInstId); if(!inst) return;
+  const isTaxi=inst.bpId==='taxi';
+  document.getElementById('fleet-modal-title').textContent=inst.customName.toUpperCase();
+  const elCap=document.getElementById('fleet-cap-options');
+  if(isTaxi) {
+    elCap.innerHTML=`
+      <button class="btn btn-muted" style="flex:1;padding:6px;font-size:10px;" onclick="buyFleetCap(5,17500)">+5 ($17.5k)</button>
+      <button class="btn btn-muted" style="flex:1;padding:6px;font-size:10px;" onclick="buyFleetCap(10,50000)">+10 ($50k)</button>
+      <button class="btn btn-gold" style="flex:1;padding:6px;font-size:10px;" onclick="buyFleetCap(20,140000)">+20 ($140k)</button>`;
+  } else {
+    elCap.innerHTML=`
+      <button class="btn btn-muted" style="flex:1;padding:6px;font-size:10px;" onclick="buyFleetCap(5,30000)">+5 ($30k)</button>
+      <button class="btn btn-muted" style="flex:1;padding:6px;font-size:10px;" onclick="buyFleetCap(10,80000)">+10 ($80k)</button>
+      <button class="btn btn-gold" style="flex:1;padding:6px;font-size:10px;" onclick="buyFleetCap(20,200000)">+20 ($200k)</button>`;
+  }
+  const elStore=document.getElementById('fleet-store'); elStore.innerHTML='';
+  Object.keys(CAR_TYPES).forEach(k=>{
+    const c=CAR_TYPES[k];
+    if((c.fleetType||'shipping')!==inst.bpId) return;
+    elStore.innerHTML+=`
+      <div style="padding:10px;border:1px solid var(--border);border-radius:8px;">
+        <div style="display:flex;justify-content:space-between;font-weight:700;font-size:13px;">
+          <span>${c.name}</span><span class="mono" style="color:var(--green);">${fmt(c.incPerHour)}/hr</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin:4px 0 8px;">${c.type} · Max ${c.maxMiles.toLocaleString()} mi · ${fmt(c.cost)} ea</div>
+        <div style="display:flex;gap:6px;">
+          <input type="number" id="buy-qty-${k}" value="1" min="1" style="width:60px;padding:7px;text-align:center;" onfocus="this.value=''" onblur="if(!this.value)this.value='1';updateCarPrice('${k}',${c.cost})" oninput="updateCarPrice('${k}',${c.cost})">
+          <button class="btn btn-muted" style="padding:6px 10px;font-size:10px;" onclick="setMaxCarQty('${k}',${c.cost})">MAX</button>
+          <button id="buy-btn-${k}" class="btn btn-blue" style="flex:1;font-size:11px;" onclick="buyCar('${k}')">BUY — ${fmt(c.cost)}</button>
+        </div>
+      </div>`;
+  });
+  const elGarage=document.getElementById('fleet-garage');
+  if(inst.fleet.length===0){elGarage.innerHTML='<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px;">Garage is empty.</div>';return;}
+  elGarage.innerHTML=inst.fleet.map((car,i)=>{
+    const ct=CAR_TYPES[car.typeId];
+    const p=Math.min(100,(car.mileage/ct.maxMiles)*100);
+    const barColor = p>75?'var(--red)':p>40?'var(--gold)':'var(--blue)';
+    return `<div style="padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--card2);">
+      <div style="display:flex;justify-content:space-between;font-weight:700;font-size:12px;">
+        <span>${ct.name} <span style="color:var(--muted);font-weight:500;font-size:10px;">${ct.type}</span></span>
+        <span class="mono" style="color:var(--green);">${fmt(ct.incPerHour)}/hr</span>
+      </div>
+      <div style="font-size:11px;color:var(--muted);display:flex;justify-content:space-between;margin-top:6px;">
+        <span>Mi: <span id="car-mi-txt-${i}">${Math.floor(car.mileage).toLocaleString()}</span> / ${ct.maxMiles.toLocaleString()}</span>
+        <span>${p.toFixed(1)}%</span>
+      </div>
+      <div style="height:5px;background:var(--border);border-radius:3px;margin-top:5px;overflow:hidden;">
+        <div id="car-mi-bar-${i}" style="height:100%;background:${barColor};width:${p}%;transition:width .3s;"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// BUSINESS TIMER TICK
+// ============================================================
+function updateBizTimers(dt) {
+  G.ownedBiz.forEach(inst => {
+    // 1. Batched 5-second passive income payout
+    inst.payoutTimer = (inst.payoutTimer??5) - dt;
+    if (inst.payoutTimer <= 0) {
+      const inc = getBizIncPerHour(inst);
+      if (inc > 0) {
+        const earned = (inc/3600)*5;
+        earn(earned);
+        inst.lifetimeEarnings = (inst.lifetimeEarnings||0) + earned;
+      }
+      inst.payoutTimer += 5;
+    }
+
+    // 2. Construction countdown — surgical text patch
+    if (inst.constructTimeLeft > 0) {
+      inst.constructTimeLeft = Math.max(0, inst.constructTimeLeft-dt);
+      if (inst.constructTimeLeft <= 0) {
+        finishUpgrade(inst);
+      } else {
+        const el=document.getElementById(`bld-${inst.instId}`);
+        if (el) el.textContent = Math.ceil(inst.constructTimeLeft)+'s';
+      }
+    }
+
+    // 3. Upfront cooldown — surgical bar patch
+    if (inst.upfrontTimer > 0) {
+      inst.upfrontTimer = Math.max(0, inst.upfrontTimer-dt);
+      if (inst.upfrontTimer <= 0) { patchUpfrontUI(inst); alertDirty=true; }
+      else {
+        const bar=document.getElementById(`bar-upf-${inst.instId}`);
+        if (bar) bar.style.width = ((1-inst.upfrontTimer/60)*100)+'%';
+      }
+    }
+
+    // 4. Fleet mileage (only for fleet businesses)
+    if (BIZ_BPS[inst.bpId]?.type==='fleet' && inst.fleet?.length>0) {
+      const mph = 22369.363/3600;
+      inst.fleet.forEach((car,i) => {
+        if (car.mileage < CAR_TYPES[car.typeId].maxMiles) {
+          car.mileage += mph*dt;
+          if (car.mileage >= CAR_TYPES[car.typeId].maxMiles) {
+            invalidateCache(inst.instId); recalcTotalIncome();
+          }
+          if (currentFleetInstId===inst.instId) {
+            const txt=document.getElementById(`car-mi-txt-${i}`);
+            const bar=document.getElementById(`car-mi-bar-${i}`);
+            if(txt) txt.textContent=Math.floor(car.mileage).toLocaleString();
+            if(bar) bar.style.width=Math.min(100,(car.mileage/CAR_TYPES[car.typeId].maxMiles)*100)+'%';
+          }
+        }
+      });
+    }
+  });
+
+  // Flush dirty flags — only rebuild DOM when something actually changed
+  if (bizListDirty && activeTab==='business') { renderOwnedBiz(); bizListDirty=false; }
+}
+
+// ============================================================
+// STOCKS
+// ============================================================
+function updateStockPrices() {
+  STOCKS_DATA.forEach(s=>{
+    G.stockPrev[s.id]=G.stockPrices[s.id];
+    const chg=1+(Math.random()-0.5)*2*s.vol;
+    const mr =1+(s.startPrice-G.stockPrices[s.id])/s.startPrice*0.05;
+    G.stockPrices[s.id]=Math.max(0.01,G.stockPrices[s.id]*chg*mr);
+    const h=G.stockHistory[s.id]; h.push(G.stockPrices[s.id]);
+    if(h.length>60) h.shift();
+  });
+}
+function processDividends(dt) {
+  STOCKS_DATA.forEach(s=>{
+    const st=G.stocks[s.id];
+    if(st.shares>0&&s.div) st.divVault=(st.divVault||0)+st.shares*G.stockPrices[s.id]*(s.div/60)*dt;
+  });
+}
+function collectDividend(id) {
+  const st=G.stocks[id]; if(!st.divVault||st.divVault<=0) return;
+  earn(st.divVault);
+  showFloatNum(window.innerWidth/2,window.innerHeight/2,'+'+fmt(st.divVault));
+  st.divVault=0; updateStockTick();
+}
+function executeTrade(id,action,amountType) {
+  const s=STOCKS_DATA.find(x=>x.id===id), st=G.stocks[id], price=G.stockPrices[id];
+  st.totalCost??=st.shares*price; st.divVault??=0;
+  const inp=parseFloat(document.getElementById(`sq-${id}`)?.value)||0;
+  const mode=document.getElementById(`mode-${id}`)?.value||'shares';
+  let qty=0;
+  if      (amountType==='max-buy')   qty=Math.min(Math.floor(G.cash/price),s.maxShares-st.shares);
+  else if (amountType==='half-buy')  qty=Math.floor(Math.min(Math.floor(G.cash/price),s.maxShares-st.shares)/2);
+  else if (amountType==='max-sell')  qty=st.shares;
+  else if (amountType==='half-sell') qty=Math.floor(st.shares/2);
+  else qty=mode==='usd'?Math.floor(inp/price):Math.floor(inp);
+  if(qty<=0){toast('Invalid amount.','err');return;}
+  if(action==='buy'){
+    const cost=price*qty;
+    if(!canAfford(cost)){toast('Not enough cash!','err');return;}
+    if(st.shares+qty>s.maxShares){toast('Exceeds volume limit!','err');return;}
+    spend(cost); st.totalCost+=cost; st.shares+=qty;
+    toast(`Bought ${qty.toLocaleString()} shares`,'success');
+  } else {
+    if(st.shares<qty){toast('Not enough shares!','err');return;}
+    const avgCost=st.totalCost/st.shares;
+    st.totalCost-=avgCost*qty; st.shares-=qty;
+    if(st.shares<=0) st.totalCost=0;
+    earn(price*qty);
+    toast(`Sold ${qty.toLocaleString()} shares`,'success');
+  }
+  renderStocks();
+}
+function drawChart(c,hist,color){
+  if(!c) return;
+  const ctx=c.getContext('2d');
+  const w=c.clientWidth>0?c.clientWidth:300, h=50;
+  c.width=w; c.height=h; ctx.clearRect(0,0,w,h);
+  if(hist.length<2) return;
+  const mn=Math.min(...hist), mx=Math.max(...hist), rng=mx-mn||1;
+  ctx.beginPath(); ctx.strokeStyle=color||'#2dd4a0'; ctx.lineWidth=1.5;
+  hist.forEach((p,i)=>{
+    const x=(i/(hist.length-1))*w, y=h-((p-mn)/rng)*(h-6)-3;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
+  ctx.fillStyle=(color||'#2dd4a0')+'18'; ctx.fill();
+}
+function renderStocks() {
+  const el=document.getElementById('stock-list'); el.innerHTML='';
+  STOCKS_DATA.forEach(s=>{
+    const price=G.stockPrices[s.id], prev=G.stockPrev[s.id];
+    const chg=(price-prev)/prev;
+    const st=G.stocks[s.id];
+    st.totalCost??=st.shares*price; st.divVault??=0;
+    const owned=st.shares, avail=s.maxShares-owned;
+    const currVal=owned*price, profit=currVal-(st.totalCost||0);
+    const profPct=st.totalCost>0?(profit/st.totalCost)*100:0;
+    let posColor='var(--muted)',posSign='';
+    if(profit>0.01){posColor='var(--green)';posSign='+';}
+    else if(profit<-0.01){posColor='var(--red)';}
+    const posHTML=owned>0
+      ?`Profit: <span style="color:${posColor};font-weight:700;">${posSign}${fmt(profit)} (${posSign}${profPct.toFixed(2)}%)</span>`
+      :`<span style="color:var(--muted)">No position</span>`;
+
+    const div=document.createElement('div'); div.className='card';
+    div.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-size:10px;letter-spacing:2px;color:var(--muted);font-weight:700;">${s.ticker}</div>
+          <div style="font-size:15px;font-weight:700;margin-top:1px;">${s.name}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="price-big" id="price-${s.id}">$${price.toFixed(2)}</div>
+          <div id="chg-${s.id}" class="change ${chg>=0?'up':'down'}">${pct(chg)}</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);display:flex;justify-content:space-between;margin-top:4px;">
+        <span>Available: ${avail.toLocaleString()}</span>
+        <span>Div: ${(s.div*100).toFixed(2)}%/min</span>
+      </div>
+      <canvas id="chart-${s.id}" width="300" height="50" style="width:100%;height:50px;margin:8px 0;"></canvas>
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:11px;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+          <span style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;">POSITION</span>
+          <span style="font-family:var(--mono);font-size:13px;">${owned.toLocaleString()} shares</span>
+        </div>
+        <div id="pos-${s.id}" style="font-size:13px;margin-bottom:10px;">${posHTML}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:8px;">
+          <div>
+            <div style="font-size:10px;color:var(--muted);font-weight:700;">UNPAID YIELD</div>
+            <div id="div-${s.id}" class="mono" style="font-size:14px;color:var(--gold);">${fmt(st.divVault)}</div>
+          </div>
+          <button class="btn btn-gold" style="padding:5px 12px;font-size:11px;" onclick="collectDividend('${s.id}')">Collect</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:6px;">
+        <input type="number" id="sq-${s.id}" value="1" min="1" style="flex:1;">
+        <select id="mode-${s.id}" style="padding:8px;">
+          <option value="shares">Shares</option>
+          <option value="usd">USD ($)</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:6px;">
+        <button class="btn btn-blue" style="flex:1;padding:10px;" onclick="executeTrade('${s.id}','buy','manual')">BUY</button>
+        <button class="btn btn-muted" style="flex:1;padding:10px;" onclick="executeTrade('${s.id}','sell','manual')">SELL</button>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-muted" style="flex:1;padding:6px;font-size:10px;" onclick="executeTrade('${s.id}','buy','half-buy')">½ Buy</button>
+        <button class="btn btn-muted" style="flex:1;padding:6px;font-size:10px;" onclick="executeTrade('${s.id}','buy','max-buy')">Max Buy</button>
+        <button class="btn btn-muted" style="flex:1;padding:6px;font-size:10px;" onclick="executeTrade('${s.id}','sell','half-sell')">½ Sell</button>
+        <button class="btn btn-muted" style="flex:1;padding:6px;font-size:10px;" onclick="executeTrade('${s.id}','sell','max-sell')">Max Sell</button>
+      </div>`;
+    el.appendChild(div);
+  });
+  setTimeout(()=>{
+    STOCKS_DATA.forEach(s=>{
+      const chg=(G.stockPrices[s.id]-G.stockPrev[s.id])/G.stockPrev[s.id];
+      drawChart(document.getElementById('chart-'+s.id),G.stockHistory[s.id],chg>=0?'#2dd4a0':'#f05a6e');
+    });
+  },0);
+}
+function updateStockTick() {
+  STOCKS_DATA.forEach(s=>{
+    const price=G.stockPrices[s.id], prev=G.stockPrev[s.id], chg=(price-prev)/prev;
+    const st=G.stocks[s.id];
+    const pe=document.getElementById('price-'+s.id);
+    const ce=document.getElementById('chg-'+s.id);
+    const de=document.getElementById('div-'+s.id);
+    const pose=document.getElementById('pos-'+s.id);
+    if(pe) pe.textContent='$'+price.toFixed(2);
+    if(ce){ce.textContent=pct(chg);ce.className='change '+(chg>=0?'up':'down');}
+    if(de) de.textContent=fmt(st.divVault||0);
+    if(pose&&st.shares>0){
+      st.totalCost??=st.shares*price;
+      const currVal=st.shares*price, profit=currVal-st.totalCost;
+      const pp=st.totalCost>0?(profit/st.totalCost)*100:0;
+      let pc='var(--muted)',ps='';
+      if(profit>0.01){pc='var(--green)';ps='+';}else if(profit<-0.01){pc='var(--red)';}
+      pose.innerHTML=`Profit: <span style="color:${pc};font-weight:700;">${ps}${fmt(profit)} (${ps}${pp.toFixed(2)}%)</span>`;
+    } else if(pose) pose.innerHTML='<span style="color:var(--muted)">No position</span>';
+    const c=document.getElementById('chart-'+s.id);
+    if(c) drawChart(c,G.stockHistory[s.id],chg>=0?'#2dd4a0':'#f05a6e');
+  });
+}
 function updateTicker(){
   let html='';
   STOCKS_DATA.forEach(s=>{
-    const p=G.stockPrices[s.id], prev=G.stockPrev[s.id]; const chg=(p-prev)/prev, cls=chg>=0?'ticker-up':'ticker-dn';
-    html+=`<span class="ticker-item"><span style="color:var(--muted)">${s.ticker}</span><span>$${p.toFixed(2)}</span><span class="${cls}">${pct(chg)}</span></span>`;
+    const p=G.stockPrices[s.id],prev=G.stockPrev[s.id],chg=(p-prev)/prev;
+    const cls=chg>=0?'ticker-up':'ticker-dn';
+    html+=`<span class="ticker-item"><span class="ticker-sym">${s.ticker}</span><span>$${p.toFixed(2)}</span><span class="${cls}">${pct(chg)}</span></span>`;
   });
-  // Add a gap so it has time to breathe before looping
-  html += `<span style="display:inline-block; width: 250px;"></span>`;
-  document.getElementById('ticker-inner').innerHTML = html + html;
+  html+=`<span style="display:inline-block;width:200px;"></span>`;
+  document.getElementById('ticker-inner').innerHTML=html+html;
 }
 
-// ==========================================
-// ⚙️ TABS & SYSTEM LOGIC
-// ==========================================
-function toggleDarkMode() {
-  document.body.classList.toggle('dark-mode');
-  localStorage.setItem('bEmpireDarkMode', document.body.classList.contains('dark-mode') ? '1' : '0');
-}
-function toast(msg,type){
-  const el=document.createElement('div'); el.className='toast-msg'+(type==='success'?' toast-success':type==='err'?' toast-err':''); el.textContent=msg;
-  document.getElementById('toast').appendChild(el); setTimeout(()=>el.remove(),3500);
-}
-function showTab(id,btn){
+// ============================================================
+// TABS
+// ============================================================
+function showTab(id, btn) {
   document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active'); activeTab=id;
-  
   if(id==='earnings') updateClickerUI();
-  if(id==='business') { renderOwnedBiz(); updateBizTopStats(); } 
-  if(id==='investing') { renderStocks(); setTimeout(updateStockTick, 10); } 
-  if(id==='profile') {
-     const elLife = document.getElementById('prof-life');
-     if (elLife) elLife.textContent = fmt(G.lifetimeEarned);
-  }
-} 
-  updateNavAlerts();
+  if(id==='business') { renderOwnedBiz(); updateBizTopBar(); bizListDirty=false; }
+  if(id==='investing') { renderStocks(); setTimeout(updateStockTick,20); }
+  if(id==='profile') { if(DOM.profLife) DOM.profLife.textContent=fmt(G.lifetimeEarned); }
+  alertDirty=true;
+}
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+  localStorage.setItem('bEmpireDarkMode', document.body.classList.contains('dark-mode')?'1':'0');
+}
+function toast(msg,type) {
+  const el=document.createElement('div');
+  el.className='toast-msg'+(type==='success'?' toast-success':type==='err'?' toast-err':'');
+  el.textContent=msg;
+  document.getElementById('toast').appendChild(el);
+  setTimeout(()=>el.remove(),3000);
+}
 
-// --- IMPORT / EXPORT STRING SYSTEM ---
+// ============================================================
+// IMPORT / EXPORT
+// ============================================================
 function openExportModal() {
-  saveGame(); // Force save to ensure data is perfectly up to date
-  const raw = localStorage.getItem('bEmpireTycoonSave');
-  if (!raw) { toast('No save data found!', 'err'); return; }
-  
-  // Scramble JSON into a Base64 string so it's easy to copy
-  const encodedStr = btoa(unescape(encodeURIComponent(raw)));
-  
-  document.getElementById('save-modal-title').textContent = 'EXPORT SAVE STRING';
-  document.body.classList.contains('dark-mode'); // Check UI context
-  document.getElementById('save-modal-desc').innerHTML = 'Copy this scrambled text block and save it somewhere safe (like a Notes app). You can paste it back in to load your game on any device.';
-  
-  const txtArea = document.getElementById('save-textarea');
-  txtArea.value = encodedStr;
-  txtArea.readOnly = true;
-  
-  const actionBtn = document.getElementById('save-action-btn');
-  actionBtn.textContent = 'COPY TO CLIPBOARD';
-  actionBtn.className = 'btn btn-gold';
-  actionBtn.onclick = () => {
-    txtArea.select();
-    navigator.clipboard.writeText(encodedStr).then(() => {
-      toast('Copied to clipboard!', 'success');
-      document.getElementById('save-modal').style.display = 'none';
-    }).catch(err => {
-      toast('Failed to copy. Please manually copy the text.', 'err');
-    });
-  };
-  
-  document.getElementById('save-modal').style.display = 'flex';
+  saveGame();
+  const raw=localStorage.getItem('bEmpireTycoonSave'); if(!raw){toast('No save data!','err');return;}
+  const enc=btoa(unescape(encodeURIComponent(raw)));
+  document.getElementById('save-modal-title').textContent='Export Save String';
+  document.getElementById('save-modal-desc').innerHTML='Copy this string and paste it on any device to restore your game.';
+  const ta=document.getElementById('save-textarea'); ta.value=enc; ta.readOnly=true;
+  const btn=document.getElementById('save-action-btn');
+  btn.textContent='Copy to Clipboard'; btn.className='btn btn-gold';
+  btn.onclick=()=>{ navigator.clipboard.writeText(enc).then(()=>{toast('Copied!','success');closeModal('save-modal');}).catch(()=>toast('Copy failed — select and copy manually.','err')); };
+  document.getElementById('save-modal').style.display='flex';
 }
-
 function openImportModal() {
-  document.getElementById('save-modal-title').textContent = 'IMPORT SAVE STRING';
-  document.getElementById('save-modal-desc').innerHTML = 'Paste your previously exported string below. <strong>WARNING: This will completely overwrite your current progress.</strong>';
-  
-  const txtArea = document.getElementById('save-textarea');
-  txtArea.value = '';
-  txtArea.readOnly = false;
-  
-  const actionBtn = document.getElementById('save-action-btn');
-  actionBtn.textContent = 'LOAD SAVE';
-  actionBtn.className = 'btn btn-green';
-  actionBtn.onclick = () => {
-    const inputStr = txtArea.value.trim();
-    if (!inputStr) { toast('Please paste a string first.', 'err'); return; }
-    
-    try {
-      // Unscramble Base64 string back into JSON
-      const decodedRaw = decodeURIComponent(escape(atob(inputStr)));
-      const data = JSON.parse(decodedRaw);
-      
-      // Basic validation to make sure it's an actual game save
-      if (data && data.cash !== undefined && data.ownedBiz) { 
-        localStorage.setItem('bEmpireTycoonSave', JSON.stringify(data));
-        toast('Save string verified! Reloading...', 'success');
-        document.getElementById('save-modal').style.display = 'none';
-        setTimeout(() => location.reload(), 1000); // Reload to cleanly apply state
-      } else {
-        toast('Invalid save file data format.', 'err');
-      }
-    } catch (err) {
-      toast('Corrupted or invalid save string.', 'err');
-    }
+  document.getElementById('save-modal-title').textContent='Import Save String';
+  document.getElementById('save-modal-desc').innerHTML='Paste your save string below. <strong style="color:var(--red)">This overwrites all current progress.</strong>';
+  const ta=document.getElementById('save-textarea'); ta.value=''; ta.readOnly=false;
+  const btn=document.getElementById('save-action-btn');
+  btn.textContent='Load Save'; btn.className='btn btn-green';
+  btn.onclick=()=>{
+    const str=ta.value.replace(/\s+/g,''); if(!str){toast('Paste a string first.','err');return;}
+    try{
+      const dec=decodeURIComponent(escape(atob(str)));
+      const data=JSON.parse(dec);
+      if(data&&data.cash!==undefined&&data.ownedBiz){
+        localStorage.setItem('bEmpireTycoonSave',JSON.stringify(data));
+        toast('Save loaded! Reloading...','success');
+        closeModal('save-modal');
+        setTimeout(()=>{ window.location.href=window.location.href.split('?')[0].split('#')[0]; },800);
+      }else{toast('Invalid save format.','err');}
+    }catch(e){toast('Corrupted string — copy the full block.','err');}
   };
-  
-  document.getElementById('save-modal').style.display = 'flex';
+  document.getElementById('save-modal').style.display='flex';
 }
 
-// ==========================================
-// ⏱️ GAME LOOP (Throttling / Background Safe)
-// ==========================================
-let uiT = 0;
-let stockT = 0;
-let tickerT = 0;
+// ============================================================
+// GAME LOOP
+// ============================================================
+let uiSlowT=0, stockT=0, tickerT=0;
 
-// Reconnect timestamps after tab hiding
-document.addEventListener('visibilitychange', () => {
-   if (!document.hidden) loopLastMs = Date.now();
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden) loopLastMs=Date.now();
+  else saveGame();
 });
 
 function gameLogicLoop() {
-  const now = Date.now(); 
-  let dt = (now - loopLastMs) / 1000; 
-  if (dt > 1.0) dt = 1.0; // Clamp massive spikes; long offline handles itself
-  loopLastMs = now;
+  const now=Date.now();
+  let dt=(now-loopLastMs)/1000;
+  // Cap dt at 2s max per tick to prevent income spike on resume.
+  // Real offline income is handled at load time.
+  if(dt>2) dt=2;
+  loopLastMs=now;
 
   updateBizTimers(dt);
+  processDividends(dt);
 
-  stockT += dt;
-  if (stockT >= 3.0) {
-     stockT = 0;
-     updateStockPrices();
-     if (activeTab === 'investing') updateStockTick();
-  }
+  // Fast: every tick (100ms) — just cash display
+  updateFast();
 
-  uiT += dt;
-  if (uiT >= 0.1) {
-     uiT = 0;
-     updateDynamicVisuals();
-  }
+  // Medium: every 500ms — totals, biz bar, alerts
+  uiSlowT+=dt;
+  if(uiSlowT>=0.5){ uiSlowT=0; updateMedium(); }
 
-  tickerT += dt;
-  if (tickerT >= 5) {
-     tickerT = 0;
-     updateTicker();
-  }
+  // Stocks: every 3s
+  stockT+=dt;
+  if(stockT>=3){ stockT=0; updateStockPrices(); if(activeTab==='investing') updateStockTick(); }
+
+  // Ticker: every 6s
+  tickerT+=dt;
+  if(tickerT>=6){ tickerT=0; updateTicker(); }
 }
 
-function init(){
-  if(localStorage.getItem('bEmpireDarkMode') === '1') document.body.classList.add('dark-mode');
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  // Cache DOM refs once — never call getElementById in the loop
+  DOM.univCash      = document.getElementById('univ-cash');
+  DOM.univStars     = document.getElementById('univ-stars');
+  DOM.ccBalance     = document.getElementById('cc-balance');
+  DOM.ccClick       = document.getElementById('cc-click');
+  DOM.ccLevel       = document.getElementById('cc-level');
+  DOM.ccProgress    = document.getElementById('cc-progress');
+  DOM.ccUpgradeBox  = document.getElementById('cc-upgrade-box');
+  DOM.ccUpPower     = document.getElementById('cc-up-power');
+  DOM.ccUpCost      = document.getElementById('cc-up-cost');
+  DOM.earnGross     = document.getElementById('earn-gross');
+  DOM.earnLife      = document.getElementById('earn-life');
+  DOM.bizLandTxt    = document.getElementById('biz-land-txt');
+  DOM.bizRevTxt     = document.getElementById('biz-rev-txt');
+  DOM.btnUnlockAll  = document.getElementById('btn-unlock-all');
+  DOM.btnCollectAll = document.getElementById('btn-collect-all');
+  DOM.btnCooldownAll= document.getElementById('btn-cooldown-all');
+  DOM.bizAlertDot   = document.getElementById('biz-alert-dot');
+  DOM.profLife      = document.getElementById('prof-life');
+
   initState();
   loadGame();
   updateTicker();
-  renderOwnedBiz(); updateBizTopStats(); renderStocks(); updateClickerUI();
+  renderOwnedBiz(); updateBizTopBar(); renderStocks(); updateClickerUI();
   updateNavAlerts();
-  
-  // Decoupled interval for deep background execution
+
+  // Game logic: setInterval continues in background tabs (unlike rAF)
   setInterval(gameLogicLoop, 100);
-  setInterval(saveGame, 15000); 
+  // Auto-save every 20s
+  setInterval(saveGame, 20000);
 }
-window.addEventListener('load',init);
+
+window.addEventListener('load', init);
 </script>
 </body>
 </html>
