@@ -1602,25 +1602,54 @@ function openExportModal() {
   document.getElementById('save-modal').style.display='flex';
 }
 function openImportModal() {
-  document.getElementById('save-modal-title').textContent='Import Save String';
-  document.getElementById('save-modal-desc').innerHTML='Paste your save string below. <strong style="color:var(--red)">This overwrites all current progress.</strong>';
-  const ta=document.getElementById('save-textarea'); ta.value=''; ta.readOnly=false;
-  const btn=document.getElementById('save-action-btn');
-  btn.textContent='Load Save'; btn.className='btn btn-green';
-  btn.onclick=()=>{
-    const str=ta.value.replace(/\s+/g,''); if(!str){toast('Paste a string first.','err');return;}
-    try{
-      const dec=decodeURIComponent(escape(atob(str)));
-      const data=JSON.parse(dec);
-      if(data&&data.cash!==undefined&&data.ownedBiz){
-        localStorage.setItem('bEmpireTycoonSave',JSON.stringify(data));
-        toast('Save loaded! Reloading...','success');
-        closeModal('save-modal');
-        setTimeout(()=>{ window.location.href=window.location.href.split('?')[0].split('#')[0]; },800);
-      }else{toast('Invalid save format.','err');}
-    }catch(e){toast('Corrupted string — copy the full block.','err');}
+  document.getElementById('save-modal-title').textContent = 'IMPORT SAVE STRING';
+  document.getElementById('save-modal-desc').innerHTML = 'Paste your previously exported string below. <strong>WARNING: This will completely overwrite your current progress.</strong>';
+  
+  const txtArea = document.getElementById('save-textarea');
+  txtArea.value = '';
+  txtArea.readOnly = false;
+  
+  const actionBtn = document.getElementById('save-action-btn');
+  actionBtn.textContent = 'LOAD SAVE';
+  actionBtn.className = 'btn btn-green';
+  actionBtn.onclick = () => {
+    // Strip hidden spaces from mobile clipboards
+    const inputStr = txtArea.value.replace(/\s+/g, '');
+    if (!inputStr) { toast('Please paste a string first.', 'err'); return; }
+    
+    try {
+      const decodedRaw = decodeURIComponent(escape(atob(inputStr)));
+      const data = JSON.parse(decodedRaw);
+      
+      if (data && data.cash !== undefined && data.ownedBiz) { 
+        // 1. Instantly overwrite live memory
+        G = data; 
+        localStorage.setItem('bEmpireTycoonSave', JSON.stringify(G));
+        
+        // 2. Wipe the session cache so old businesses don't bleed over
+        for (let key in incomeCache) delete incomeCache[key];
+        
+        toast('Save imported successfully!', 'success');
+        document.getElementById('save-modal').style.display = 'none';
+        
+        // 3. SEAMLESS UI INJECTION (No page reload required)
+        renderOwnedBiz();
+        updateBizTopStats();
+        renderStocks();
+        updateClickerUI();
+        updateNavAlerts();
+        updateDynamicVisuals();
+        
+      } else {
+        toast('Invalid save file data format.', 'err');
+      }
+    } catch (err) {
+      console.error("Import Error:", err);
+      toast('Corrupted string. Check if it copied entirely.', 'err');
+    }
   };
-  document.getElementById('save-modal').style.display='flex';
+  
+  document.getElementById('save-modal').style.display = 'flex';
 }
 
 // ============================================================
